@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  username     String        @unique
+  passwordHash String
+  role         String        @default("USER") // USER, ADMIN
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  jobs         DownloadJob[]
+  collections  Collection[]
+
+  @@index([email])
+  @@index([username])
+}
+
+model DownloadJob {
+  id             String      @id @default(uuid())
+  url            String
+  instagramId    String?
+  shortcode      String?
+  mediaType      String      // POST, REEL, STORY, CAROUSEL, PROFILE
+  status         String      @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  error          String?
+  authorUsername String?
+  authorFullName String?
+  authorAvatarUrl String?
+  caption        String?
+  likeCount      Int?
+  commentCount   Int?
+  viewCount      Int?
+  ipAddress      String?
+  userId         String?
+  user           User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  files          MediaFile[]
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@index([url])
+  @@index([shortcode])
+  @@index([status])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model MediaFile {
+  id             String      @id @default(uuid())
+  downloadJobId  String
+  job            DownloadJob @relation(fields: [downloadJobId], references: [id], onDelete: Cascade)
+  fileType       String      // IMAGE, VIDEO
+  originalUrl    String
+  storagePath    String
+  storageDriver  String      @default("LOCAL") // LOCAL, S3
+  mimeType       String
+  sizeBytes      Int         @default(0)
+  width          Int?
+  height         Int?
+  checksumSha256 String?
+  createdAt      DateTime    @default(now())
+  collectionItems CollectionItem[]
+
+  @@index([downloadJobId])
+  @@index([checksumSha256])
+}
+
+model Collection {
+  id          String           @id @default(uuid())
+  name        String
+  description String?
+  userId      String
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items       CollectionItem[]
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([userId])
+}
+
+model CollectionItem {
+  id           String     @id @default(uuid())
+  collectionId String
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  mediaFileId  String
+  mediaFile    MediaFile  @relation(fields: [mediaFileId], references: [id], onDelete: Cascade)
+  addedAt      DateTime   @default(now())
+
+  @@unique([collectionId, mediaFileId])
+  @@index([collectionId])
+  @@index([mediaFileId])
+}
