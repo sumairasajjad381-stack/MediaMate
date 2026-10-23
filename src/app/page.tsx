@@ -34,9 +34,8 @@ export default function HomePage() {
 
   const saveToHistory = (item: MediaInspectResult) => {
     setHistory((prev) => {
-      // Avoid duplicate URLs at top
       const filtered = prev.filter((h) => h.url !== item.url);
-      const updated = [item, ...filtered].slice(0, 20); // Keep last 20
+      const updated = [item, ...filtered].slice(0, 20);
       try {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
       } catch {
@@ -85,17 +84,17 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-navy-950 text-gray-100 selection:bg-brand-blue selection:text-white">
+    <div className="min-h-screen flex flex-col bg-white text-gray-800">
       <Header
         historyCount={history.length}
         onOpenHistory={() => setIsHistoryOpen(true)}
       />
 
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8 sm:py-12 space-y-12">
-        {/* Hero Headline */}
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-8 sm:py-14 space-y-12">
+        {/* Google-Style Clean Hero */}
         <HeroSection />
 
-        {/* URL Input Form */}
+        {/* Clean URL Input Form */}
         <MediaInspector
           onInspect={handleInspect}
           isLoading={isLoading}
@@ -109,10 +108,10 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Supported Media Tools */}
+        {/* Minimal Supported Media Tools */}
         <ToolsGrid />
 
-        {/* FAQs */}
+        {/* Transparent FAQs */}
         <FAQSection />
       </main>
 

@@ -1,48 +1,48 @@
 import React from "react";
-import { HardDrive, Youtube, Video, ShieldCheck, Image as ImageIcon, Music } from "lucide-react";
+import { HardDrive, Youtube, Video, ShieldCheck } from "lucide-react";
 
 export function ToolsGrid() {
   const tools = [
     {
       icon: HardDrive,
       title: "Direct Media Prober",
-      desc: "Inspect real-time HTTP headers, detect exact byte size, probe MIME types, and stream authorized files.",
+      desc: "Detect exact byte size, probe MIME types, and stream authorized MP4, WebM, and audio files.",
       badge: "Full Download",
-      color: "text-brand-sky",
-      badgeColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+      iconBg: "bg-blue-50 text-blue-600",
+      badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
     },
     {
       icon: Youtube,
       title: "YouTube Hub",
-      desc: "Official oEmbed metadata inspection, privacy-enhanced video embed player, and max-resolution thumbnail downloader.",
+      desc: "Official oEmbed metadata inspection, clean privacy-enhanced embed player, and thumbnail downloader.",
       badge: "Embed & Thumbnail",
-      color: "text-red-400",
-      badgeColor: "bg-brand-blue/10 text-brand-sky border-brand-blue/20",
+      iconBg: "bg-red-50 text-red-600",
+      badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
     },
     {
       icon: Video,
       title: "TikTok & Reels Explorer",
-      desc: "Authorized preview and creator attribution for public short-form videos without requiring private session cookies.",
+      desc: "Official public preview and creator attribution for short-form social videos without logging in.",
       badge: "Preview & Meta",
-      color: "text-brand-emerald",
-      badgeColor: "bg-brand-blue/10 text-brand-sky border-brand-blue/20",
+      iconBg: "bg-emerald-50 text-emerald-600",
+      badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
     },
     {
       icon: ShieldCheck,
       title: "SSRF Security Filter",
       desc: "Zero-trust link validation that blocks localhost, internal subnets, and cloud instance metadata attacks.",
       badge: "Built-In",
-      color: "text-amber-400",
-      badgeColor: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+      iconBg: "bg-amber-50 text-amber-600",
+      badgeColor: "bg-amber-50 text-amber-700 border-amber-200",
     },
   ];
 
   return (
     <section className="space-y-6 pt-10">
       <div className="text-center space-y-2">
-        <h2 className="text-xl sm:text-2xl font-bold text-white">Available Media Tools</h2>
-        <p className="text-xs sm:text-sm text-gray-400 max-w-lg mx-auto">
-          Built on a modular adapter architecture designed for compliant, $0 budget operation.
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Supported Media Tools</h2>
+        <p className="text-xs sm:text-sm text-gray-500 max-w-lg mx-auto">
+          Clean, verified tools that operate strictly with permitted public methods.
         </p>
       </div>
 
@@ -52,19 +52,19 @@ export function ToolsGrid() {
           return (
             <div
               key={i}
-              className="p-5 rounded-2xl glow-card border border-navy-750 flex flex-col justify-between space-y-3 transition hover:-translate-y-1"
+              className="p-5 rounded-2xl bg-white border border-gray-200 flex flex-col justify-between space-y-3 transition-shadow hover:shadow-md"
             >
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className={`w-9 h-9 rounded-xl bg-navy-900 border border-navy-700/80 flex items-center justify-center ${tool.color}`}>
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${tool.iconBg}`}>
                     <Icon className="w-5 h-5" />
                   </div>
                   <span className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full border ${tool.badgeColor}`}>
                     {tool.badge}
                   </span>
                 </div>
-                <h3 className="font-semibold text-sm text-gray-100">{tool.title}</h3>
-                <p className="text-xs text-gray-400 leading-relaxed">{tool.desc}</p>
+                <h3 className="font-semibold text-sm text-gray-900">{tool.title}</h3>
+                <p className="text-xs text-gray-500 leading-relaxed">{tool.desc}</p>
               </div>
             </div>
           );

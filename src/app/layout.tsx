@@ -1,15 +1,19 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  themeColor: "#ffffff",
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   title: "MediaMate — Free Multi-Platform Media Toolkit",
-  description: "Your all-in-one media toolkit. Inspect, preview, and download supported media across platforms using official, authorized methods on a $0 budget.",
-  keywords: ["media toolkit", "media inspector", "video preview", "direct media download", "youtube thumbnail grabber", "oembed viewer"],
-  authors: [{ name: "MediaMate Team" }],
+  description: "A fast, clean, and free media toolkit. Inspect, preview, and download supported media across platforms with official methods.",
+  keywords: ["media toolkit", "free video preview", "media inspector", "image download", "youtube thumbnail"],
   openGraph: {
     title: "MediaMate — Free Multi-Platform Media Toolkit",
-    description: "Inspect, preview, and download supported media across platforms using official, authorized methods.",
-    url: "https://mediamate.toolkit",
+    description: "Simple, clean, and fast media toolkit. 100% free with zero registration required.",
     siteName: "MediaMate",
     locale: "en_US",
     type: "website",
@@ -26,8 +30,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark">
-      <body className="bg-[#060913] text-gray-100 antialiased selection:bg-sky-500 selection:text-white">
+    <html lang="en">
+      <body className="bg-white text-gray-800 antialiased selection:bg-blue-100 selection:text-blue-900">
         {children}
       </body>
     </html>

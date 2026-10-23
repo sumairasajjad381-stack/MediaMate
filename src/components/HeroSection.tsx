@@ -1,36 +1,39 @@
 import React from "react";
-import { Sparkles } from "lucide-react";
 
 export function HeroSection() {
   return (
-    <section className="text-center space-y-4 max-w-3xl mx-auto pt-6 sm:pt-10">
-      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-blue/10 border border-brand-blue/30 text-xs font-semibold text-brand-sky">
-        <Sparkles className="w-3.5 h-3.5" />
-        <span>Ethical & Permitted Media Inspection</span>
+    <section className="text-center space-y-4 max-w-2xl mx-auto pt-6 sm:pt-10">
+      {/* Google-style Center Dots */}
+      <div className="flex items-center justify-center gap-2 mb-2">
+        <span className="w-3.5 h-3.5 rounded-full bg-[#4285F4] animate-pulse" />
+        <span className="w-3.5 h-3.5 rounded-full bg-[#EA4335]" />
+        <span className="w-3.5 h-3.5 rounded-full bg-[#FBBC05]" />
+        <span className="w-3.5 h-3.5 rounded-full bg-[#34A853]" />
       </div>
 
-      <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
-        Your All-in-One <br />
-        <span className="brand-gradient-text">Media Toolkit</span>
+      {/* Big Simple Bold Heading */}
+      <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-gray-900">
+        Media<span className="text-[#2563eb]">Mate</span>
       </h1>
 
-      <p className="text-gray-300 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
-        Inspect, preview, and download supported media across platforms using official, authorized methods. Honest verification with zero fake download buttons.
+      {/* Small Light Gray Subtitle */}
+      <p className="text-gray-500 text-sm sm:text-base max-w-md mx-auto leading-relaxed">
+        Simple, fast, and legal multi-platform media toolkit. Inspect, preview, and download supported media files.
       </p>
 
-      {/* Quick platform indicator pills */}
-      <div className="flex flex-wrap items-center justify-center gap-2 pt-2 text-xs">
-        <span className="px-2.5 py-1 rounded-full bg-navy-850 border border-navy-700 text-gray-300">
-          ▶️ YouTube (Embed & Thumbnails)
+      {/* Light Clean Pills */}
+      <div className="flex flex-wrap items-center justify-center gap-2 pt-2 text-xs text-gray-600">
+        <span className="px-3 py-1 rounded-full bg-gray-100 border border-gray-200">
+          YouTube
         </span>
-        <span className="px-2.5 py-1 rounded-full bg-navy-850 border border-navy-700 text-gray-300">
-          🔗 Direct Video & Audio (MP4, MP3, WebM)
+        <span className="px-3 py-1 rounded-full bg-gray-100 border border-gray-200">
+          Direct MP4 & MP3
         </span>
-        <span className="px-2.5 py-1 rounded-full bg-navy-850 border border-navy-700 text-gray-300">
-          📸 Direct Images (JPG, PNG, WebP)
+        <span className="px-3 py-1 rounded-full bg-gray-100 border border-gray-200">
+          Direct Images
         </span>
-        <span className="px-2.5 py-1 rounded-full bg-navy-850 border border-navy-700 text-gray-300">
-          🎵 TikTok & Instagram (Public oEmbed)
+        <span className="px-3 py-1 rounded-full bg-gray-100 border border-gray-200">
+          TikTok & Instagram
         </span>
       </div>
     </section>

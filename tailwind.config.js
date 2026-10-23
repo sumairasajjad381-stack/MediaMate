@@ -8,18 +8,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        navy: {
-          950: "#060913",
-          900: "#0a0f1d",
-          850: "#0e1529",
-          800: "#131c35",
-          700: "#1e2c52",
-        },
-        brand: {
-          blue: "#0284c7",
-          sky: "#38bdf8",
-          emerald: "#10b981",
-          teal: "#14b8a6",
+        google: {
+          blue: "#4285F4",
+          red: "#EA4335",
+          yellow: "#FBBC05",
+          green: "#34A853",
         },
       },
     },

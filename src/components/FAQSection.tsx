@@ -30,10 +30,10 @@ export function FAQSection() {
   ];
 
   return (
-    <section className="max-w-3xl mx-auto space-y-6 pt-10">
+    <section className="max-w-2xl mx-auto space-y-6 pt-10">
       <div className="text-center space-y-2">
-        <h2 className="text-xl sm:text-2xl font-bold text-white">Frequently Asked Questions</h2>
-        <p className="text-xs sm:text-sm text-gray-400">Honest answers about legal permissions and supported tools.</p>
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Frequently Asked Questions</h2>
+        <p className="text-xs sm:text-sm text-gray-500">Transparent answers about legal permissions and supported tools.</p>
       </div>
 
       <div className="space-y-3">
@@ -42,17 +42,17 @@ export function FAQSection() {
           return (
             <div
               key={i}
-              className="rounded-2xl glow-card border border-navy-750 overflow-hidden transition"
+              className="rounded-2xl bg-white border border-gray-200 overflow-hidden transition"
             >
               <button
                 onClick={() => setOpenIndex(isOpen ? null : i)}
-                className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 font-semibold text-sm text-gray-100 hover:text-white transition"
+                className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 font-semibold text-sm text-gray-800 hover:text-blue-600 transition"
               >
                 <span>{faq.q}</span>
-                <ChevronDown className={`w-4 h-4 text-brand-sky shrink-0 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+                <ChevronDown className={`w-4 h-4 text-gray-400 shrink-0 transition-transform ${isOpen ? "rotate-180 text-blue-600" : ""}`} />
               </button>
               {isOpen && (
-                <div className="px-4 pb-5 sm:px-5 text-xs sm:text-sm text-gray-400 leading-relaxed border-t border-navy-800/60 pt-3">
+                <div className="px-4 pb-5 sm:px-5 text-xs sm:text-sm text-gray-600 leading-relaxed border-t border-gray-100 pt-3">
                   <p>{faq.a}</p>
                 </div>
               )}

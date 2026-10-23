@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #0a0f1d;
-  --foreground: #f8fafc;
+  --background: #ffffff;
+  --foreground: #1f2937;
 }
 
 body {
@@ -12,29 +12,23 @@ body {
   background-color: var(--background);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   min-height: 100vh;
+  margin: 0;
 }
 
-/* Subtle glow effects */
-.glow-card {
-  background: rgba(14, 21, 41, 0.75);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(56, 189, 248, 0.12);
+/* Google-style soft search shadow */
+.google-shadow {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
 
-.glow-card:hover {
-  border-color: rgba(56, 189, 248, 0.25);
+.google-shadow-hover:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
 }
 
-.brand-gradient-text {
-  background: linear-gradient(135deg, #38bdf8 0%, #0284c7 50%, #10b981 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Clean Google-style button gradient */
+.google-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
 }
 
-.brand-button-gradient {
-  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
-}
-
-.brand-button-gradient:hover {
-  background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+.google-btn:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
 }
