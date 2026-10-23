@@ -32,3 +32,26 @@ body {
 .google-btn:hover {
   background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
 }
+
+/* Instagram Official Pink-Purple Gradient */
+.insta-gradient-full {
+  background: linear-gradient(115deg, #feda75, #fa7e1e, #d62976, #962fbf, #4f5bd5);
+}
+
+.insta-gradient-text {
+  background: linear-gradient(115deg, #fa7e1e 0%, #d62976 40%, #962fbf 80%, #4f5bd5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.insta-btn {
+  background: linear-gradient(135deg, #d62976 0%, #962fbf 100%);
+}
+
+.insta-btn:hover {
+  background: linear-gradient(135deg, #c2185b 0%, #7b1fa2 100%);
+}
+
+.insta-shadow-hover:hover {
+  box-shadow: 0 8px 30px rgba(214, 41, 118, 0.2);
+}

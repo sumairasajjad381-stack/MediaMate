@@ -18,7 +18,23 @@ export function Footer() {
             </span>
           </div>
 
-          <div className="flex items-center gap-6">
+          {/* Platform Specific SEO Links */}
+          <div className="flex flex-wrap items-center justify-center gap-4 text-gray-600">
+            <Link href="/instagram-video-downloader" className="hover:text-[#d62976] transition font-medium">
+              Instagram Downloader
+            </Link>
+            <Link href="/facebook-reels-downloader" className="hover:text-[#1877F2] transition font-medium">
+              Facebook Reels
+            </Link>
+            <Link href="/tiktok-video-downloader" className="hover:text-gray-900 transition font-medium">
+              TikTok Downloader
+            </Link>
+            <Link href="/youtube-video-downloader" className="hover:text-red-600 transition font-medium">
+              YouTube Downloader
+            </Link>
+          </div>
+
+          <div className="flex items-center gap-4">
             <Link href="/privacy" className="hover:text-gray-900 transition">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-gray-900 transition">Terms of Use</Link>
             <a href="mailto:support@mediamate.toolkit" className="hover:text-gray-900 transition">Contact</a>
