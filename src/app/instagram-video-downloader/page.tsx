@@ -144,15 +144,15 @@ export default function InstagramVideoDownloaderPage() {
   // 10 Comprehensive Instagram FAQs with JSON-LD for SEO 95+ Score
   const faqs = [
     {
-      q: "How to download Instagram Reels in 1080p Full HD? / انسٹاگرام ریلز فل ایچ ڈی میں کیسے ڈاؤن لوڈ کریں؟",
-      a: "Copy the link of any public Instagram Reel from your Instagram app or mobile browser, paste it into the MediaMate search box above, and click 'Download Video'. MediaMate inspects the source server directly and gives you the highest available 1080p MP4 file with crisp 60fps frame rate and crystal-clear audio, completely free and without any watermark (بغیر کسی واٹر مارک کے مکمل ایچ ڈی میں ڈاؤن لوڈ کریں).",
+      q: "How to download Instagram Reels in 1080p Full HD?",
+      a: "Copy the link of any public Instagram Reel from your Instagram app or mobile browser, paste it into the MediaMate search box above, and click 'Download Video'. MediaMate inspects the source server directly and gives you the highest available 1080p MP4 file with crisp 60fps frame rate and crystal-clear audio, completely free and without any watermark.",
     },
     {
       q: "Does MediaMate stamp or burn any watermark on downloaded videos?",
       a: "No! Absolutely not. Unlike other third-party tools that insert aggressive logos, timestamps, or domain watermarks into your videos, MediaMate preserves the pristine, untouched original file directly from Instagram's content delivery network (CDN). Your downloaded MP4 file remains 100% clean and watermark-free.",
     },
     {
-      q: "How to save Instagram videos on iPhone (iOS) and Android camera roll? / موبائل گیلری میں کیسے سیو کریں؟",
+      q: "How to save Instagram videos on iPhone (iOS) and Android camera roll?",
       a: "On iPhone (iOS): Open Safari, paste the link in MediaMate, click 'Download Video (1080p)', tap the blue download arrow in Safari, select the downloaded MP4, tap the Share icon, and choose 'Save Video' to add it to your Photos app. On Android: Open Chrome, paste the link, tap Download, and the video immediately downloads straight into your device's 'Downloads' folder and Gallery.",
     },
     {
@@ -532,26 +532,23 @@ export default function InstagramVideoDownloaderPage() {
           </section>
         )}
 
-        {/* SECTION: 3 STEPS — URDU / ENGLISH MIX WITH PINK ICONS */}
+        {/* SECTION: 3 STEPS — ENGLISH ONLY */}
         <section className="space-y-6 pt-4">
           <div className="text-center space-y-2 max-w-2xl mx-auto">
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-bold bg-pink-50 text-[#d62976] border border-pink-200">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Easy 3-Step Guide • آسان اور تیز ترین طریقہ</span>
+              <span>Easy 3-Step Guide • Fast & Simple</span>
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-tight">
-              How to Download Instagram Videos & Reels <br className="hidden sm:inline" />
-              <span className="text-[#d62976] font-bold text-xl sm:text-2xl font-sans">
-                انسٹاگرام ویڈیوز اور ریلز کیسے ڈاؤن لوڈ کریں؟
-              </span>
+              How to Download Instagram Videos & Reels
             </h2>
             <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">
-              Follow these 3 simple steps to save Instagram Reels, Stories, Videos & Photos directly to your gallery in 1080p Full HD without watermarks (مفت اور بغیر واٹر مارک محفوظ کریں).
+              Follow these 3 simple steps to save Instagram Reels, Stories, Videos & Photos directly to your gallery in 1080p Full HD without watermarks.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Step 1 */}
+            {/* Box 1: Copy Link */}
             <div className="p-6 rounded-2xl bg-white border border-gray-200 relative overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-gradient-to-r before:from-[#feda75] before:via-[#d62976] before:to-[#962fbf] insta-shadow-hover transition-all text-center space-y-4">
               <div className="w-14 h-14 mx-auto rounded-2xl bg-[#fdf2f8] border border-pink-200 flex items-center justify-center text-[#d62976] shadow-sm">
                 <Copy className="w-6 h-6" />
@@ -559,24 +556,19 @@ export default function InstagramVideoDownloaderPage() {
 
               <div className="space-y-1">
                 <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-pink-50 text-[#d62976] border border-pink-200">
-                  Step 01 • مرحلہ ۱
+                  Step 01
                 </span>
                 <h3 className="font-bold text-base sm:text-lg text-gray-900">
-                  Copy Video Link <br />
-                  <span className="text-[#d62976] text-sm font-semibold">لنک کاپی کریں</span>
+                  Copy Link
                 </h3>
               </div>
 
-              <p className="text-xs text-gray-600 leading-relaxed text-left bg-gray-50/70 p-3 rounded-xl border border-gray-100">
-                <strong>English:</strong> Open Instagram on your mobile or PC, find the Reel or Video, tap the <strong>3 dots (&bull;&bull;&bull;)</strong> or <strong>Share</strong> button, and tap <strong>&ldquo;Copy Link&rdquo;</strong>.
-              </p>
-
-              <p className="text-xs text-gray-700 leading-relaxed text-right bg-pink-50/40 p-3 rounded-xl border border-pink-100/60 font-sans" dir="rtl">
-                <strong>اردو:</strong> انسٹاگرام ایپ کھولیں، اپنی پسندیدہ ریل یا ویڈیو کے ۳ ڈاٹس (•••) یا Share کے نشان پر ٹیپ کریں اور <strong>&ldquo;Copy Link&rdquo;</strong> منتخب کریں۔
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed bg-gray-50/70 p-3.5 rounded-xl border border-gray-100">
+                Open Instagram on your mobile or PC, find the Reel or Video, tap the 3 dots (...) or Share button, and tap &ldquo;Copy Link&rdquo;.
               </p>
             </div>
 
-            {/* Step 2 */}
+            {/* Box 2: Paste Link Here */}
             <div className="p-6 rounded-2xl bg-white border border-gray-200 relative overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-gradient-to-r before:from-[#feda75] before:via-[#d62976] before:to-[#962fbf] insta-shadow-hover transition-all text-center space-y-4">
               <div className="w-14 h-14 mx-auto rounded-2xl bg-[#fdf2f8] border border-pink-200 flex items-center justify-center text-[#d62976] shadow-sm">
                 <Search className="w-6 h-6" />
@@ -584,24 +576,19 @@ export default function InstagramVideoDownloaderPage() {
 
               <div className="space-y-1">
                 <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-pink-50 text-[#d62976] border border-pink-200">
-                  Step 02 • مرحلہ ۲
+                  Step 02
                 </span>
                 <h3 className="font-bold text-base sm:text-lg text-gray-900">
-                  Paste in MediaMate <br />
-                  <span className="text-[#d62976] text-sm font-semibold">لنک یہاں پیسٹ کریں</span>
+                  Paste Link Here
                 </h3>
               </div>
 
-              <p className="text-xs text-gray-600 leading-relaxed text-left bg-gray-50/70 p-3 rounded-xl border border-gray-100">
-                <strong>English:</strong> Paste the copied link into the pink-bordered input field above and click the pink <strong>&ldquo;Download Video&rdquo;</strong> button to generate the stream.
-              </p>
-
-              <p className="text-xs text-gray-700 leading-relaxed text-right bg-pink-50/40 p-3 rounded-xl border border-pink-100/60 font-sans" dir="rtl">
-                <strong>اردو:</strong> کاپی شدہ لنک کو اوپر دی گئی سرچ بار میں پیسٹ کریں اور گلابی <strong>&ldquo;Download Video&rdquo;</strong> بٹن دبائیں۔ سسٹم فوری لنک تیار کرے گا۔
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed bg-gray-50/70 p-3.5 rounded-xl border border-gray-100">
+                Paste the copied link into the pink-bordered input field above and click the pink &ldquo;Download Video&rdquo; button to generate the stream.
               </p>
             </div>
 
-            {/* Step 3 */}
+            {/* Box 3: Save to Gallery */}
             <div className="p-6 rounded-2xl bg-white border border-gray-200 relative overflow-hidden before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-gradient-to-r before:from-[#feda75] before:via-[#d62976] before:to-[#962fbf] insta-shadow-hover transition-all text-center space-y-4">
               <div className="w-14 h-14 mx-auto rounded-2xl bg-[#fdf2f8] border border-pink-200 flex items-center justify-center text-[#d62976] shadow-sm">
                 <Download className="w-6 h-6" />
@@ -609,20 +596,15 @@ export default function InstagramVideoDownloaderPage() {
 
               <div className="space-y-1">
                 <span className="inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-pink-50 text-[#d62976] border border-pink-200">
-                  Step 03 • مرحلہ ۳
+                  Step 03
                 </span>
                 <h3 className="font-bold text-base sm:text-lg text-gray-900">
-                  Download 1080p HD <br />
-                  <span className="text-[#d62976] text-sm font-semibold">گیلری میں محفوظ کریں</span>
+                  Save to Gallery
                 </h3>
               </div>
 
-              <p className="text-xs text-gray-600 leading-relaxed text-left bg-gray-50/70 p-3 rounded-xl border border-gray-100">
-                <strong>English:</strong> Preview your video and click <strong>&ldquo;Download Video (1080p)&rdquo;</strong> to save the clean MP4 directly into your gallery without any watermark!
-              </p>
-
-              <p className="text-xs text-gray-700 leading-relaxed text-right bg-pink-50/40 p-3 rounded-xl border border-pink-100/60 font-sans" dir="rtl">
-                <strong>اردو:</strong> پریویو دیکھ کر ڈاؤن لوڈ بٹن پر کلک کریں اور بغیر کسی واٹر مارک کے مکمل 1080p ایچ ڈی ویڈیو اپنی فون گیلری میں ہمیشہ کیلئے محفوظ کریں۔
+              <p className="text-xs sm:text-sm text-gray-600 leading-relaxed bg-gray-50/70 p-3.5 rounded-xl border border-gray-100">
+                Preview your video and click &ldquo;Download Video (1080p)&rdquo; to save the clean MP4 directly into your gallery without any watermark!
               </p>
             </div>
           </div>
@@ -762,11 +744,10 @@ export default function InstagramVideoDownloaderPage() {
           <div className="text-center space-y-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-pink-50 text-[#d62976] border border-pink-200">
               <Sparkles className="w-3.5 h-3.5" />
-              <span>Got Questions? • مکمل رہنمائی</span>
+              <span>Got Questions? • Quick Answers</span>
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
-              Frequently Asked Questions (FAQ) <br />
-              <span className="text-[#d62976] text-xl font-sans">عام پوچھے جانے والے سوالات</span>
+              Frequently Asked Questions (FAQ)
             </h2>
             <p className="text-xs sm:text-sm text-gray-500">
               Everything you need to know about downloading Instagram Reels, Stories, Videos and Photos in 1080p Full HD

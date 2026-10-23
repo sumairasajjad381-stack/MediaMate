@@ -55,3 +55,16 @@ body {
 .insta-shadow-hover:hover {
   box-shadow: 0 8px 30px rgba(214, 41, 118, 0.2);
 }
+
+/* Hide Next.js dev error overlays and bottom-left indicator badges */
+nextjs-portal,
+#__next-build-watcher,
+[data-nextjs-toast],
+[data-nextjs-dialog-overlay],
+[data-nextjs-dev-overlay],
+[data-nextjs-toast-wrapper] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
