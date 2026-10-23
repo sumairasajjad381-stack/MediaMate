@@ -1,124 +1,98 @@
-# InstaArchiver 🚀
+# MediaMate — Free Multi-Platform Media Toolkit 🚀
 
-A high-throughput, security-hardened Instagram media extraction, processing, and archival system built with **Next.js (App Router)**, **TypeScript**, **Prisma ORM**, and **Tailwind CSS**.
-
----
-
-## 🌟 Key Features
-
-- **Guest Ready (Zero Friction)**: Instant download of Instagram Reels, Posts, Carousels, and Stories without requiring an account.
-- **Optional Cloud Archival**: Optional user registration and authentication (salted bcrypt password hashing + secure HTTP-only JWT sessions) to organize saved media into personal libraries.
-- **Carousel & Multi-Slide Support**: Automatically discovers and separates all items in a carousel post for individual or batch downloading.
-- **On-The-Fly Batch Zip Archiving**: Streamed compression (`archiver`) allows one-click downloading of multiple assets in a `.zip` without storing temporary zip files on the host disk.
-- **Storage Driver Abstraction**:
-  - `LocalStorageDriver` out-of-the-box (zero external cloud dependencies for local dev).
-  - Drop-in `S3StorageDriver` for production deployments on AWS S3, Cloudflare R2, or MinIO.
-- **Content-Addressable Storage (SHA-256 Deduplication)**: Automatically calculates cryptographic hashes to prevent duplicate media files from consuming redundant storage.
-- **Resilient Multi-Tier Scraper**:
-  1. Internal Instagram JSON/GraphQL endpoints with browser impersonation headers.
-  2. Fallback HTML script/OpenGraph meta parsing.
-  3. Official oEmbed API fallback.
-  4. Optional authenticated scraping via `.env` session cookies for age-restricted / private posts.
+MediaMate is an ethical, high-performance, and compliant media toolkit built with **Next.js (App Router)**, **TypeScript**, and **Tailwind CSS**. Designed from the ground up for a **$0 budget**, MediaMate operates strictly with permitted official endpoints (such as public oEmbed specifications) and direct media probing without fragile, unauthorized scraping hacks.
 
 ---
 
-## 🔒 Security Architecture
+## 🌟 Supported Features & Platform Policies
 
-1. **SSRF Mitigation**: Strict validation whitelist ensures outgoing extraction requests can *only* resolve to legitimate Instagram domains (`instagram.com`, `instagr.am`), preventing internal network scans.
-2. **Zero-Trust Input Validation**: 100% of API endpoints enforce strict Zod schemas against input manipulation and parameter tampering.
-3. **Password Security**: Passwords hashed with `bcryptjs` using 12 salt rounds; minimum complexity requirements enforced.
-4. **No Hardcoded Secrets**: All keys, database credentials, and secrets are strictly read from validated environment variables (`src/lib/config.ts`), failing fast on startup if misconfigured.
-5. **Rate Limiting**: Integrated token bucket rate limiter protects against abusive request spikes and IP throttling.
+| Platform / Tool | Supported Features | Legal & Technical Method | Notes |
+| :--- | :--- | :--- | :--- |
+| **Direct Media Files** | Size detection, MIME probe, preview & streaming download | HTTP `HEAD` & `GET` Streaming | Supports `.mp4`, `.webm`, `.png`, `.jpg`, `.mp3` up to 100 MB. |
+| **YouTube** | Title, author, privacy embed player, max-res thumbnail | Official YouTube oEmbed API | Direct video stream extraction is not permitted under YouTube Developer Terms. |
+| **TikTok** | Title, author, authorized preview embed, thumbnail | Official TikTok oEmbed API | Watermark bypass/raw ripping is prohibited. |
+| **Instagram** | Creator attribution, preview, thumbnail | Official Instagram oEmbed API | Public posts only; private accounts are not accessed. |
+| **Pinterest & Facebook** | Transparent status disclosure | Labeled as Unsupported | Requires paid commercial partner credentials ($0 budget limitation). |
 
 ---
 
-## 📁 Codebase Organization
+## 🔒 Security & Safe Operation
+
+1. **Zero Fake Functionality**: MediaMate never creates fake download buttons or invented metadata. If an action is not genuinely supported, it is clearly explained.
+2. **SSRF Protection (`lib/validation/ssrf.ts`)**: Rejects requests targeting `localhost`, loopbacks, private IPv4 subnets (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`), cloud instance metadata endpoints (`169.254.169.254`), and unsafe protocols (`ftp:`, `file:`, `javascript:`).
+3. **No Private Cookies or Passwords**: The app never prompts users for their social media passwords or session tokens.
+4. **$0 Budget & Browser-Only History**: MediaMate stores your recent link history strictly in your browser's local `localStorage`. No server database is required.
+
+---
+
+## 📁 Modular Adapter Architecture
 
 ```
-├── prisma/
-│   └── schema.prisma         # Database schema (User, DownloadJob, MediaFile, Collection)
-├── src/
-│   ├── app/
-│   │   ├── api/
-│   │   │   ├── auth/         # Register, Login, Me, Logout endpoints
-│   │   │   ├── extract/      # Metadata preview endpoint
-│   │   │   ├── archive/      # Media download and archival endpoint
-│   │   │   ├── media/        # Stream single file & on-the-fly batch zip endpoint
-│   │   │   └── history/      # Download history & pagination
-│   │   ├── globals.css       # Tailwind & custom Instagram dark UI styles
-│   │   ├── layout.tsx        # Root HTML layout
-│   │   └── page.tsx          # Main interactive dashboard
-│   ├── components/
-│   │   ├── Navbar.tsx        # Top navigation & user session badge
-│   │   ├── MediaExtractorForm.tsx # Input box with clipboard paste & error feedback
-│   │   ├── MediaPreviewCard.tsx   # Live media preview, author details, slide switcher
-│   │   ├── DownloadHistoryList.tsx# Media library table & batch zip downloader
-│   │   └── AuthModal.tsx     # Sign In & Registration modal
-│   └── lib/
-│       ├── config.ts         # Type-safe validated environment variables
-│       ├── db.ts             # Prisma client singleton
-│       ├── errors.ts         # Standard AppError hierarchy
-│       ├── logger.ts         # Structured JSON logger
-│       ├── rate-limiter.ts   # In-memory token bucket rate limiter
-│       ├── extractor/        # URL parser, multi-tier scraper, and downloader
-│       ├── security/         # Auth, SSRF prevention, XSS sanitation, Zod schemas
-│       └── storage/          # StorageDriver interface, local & S3 implementations
-├── storage/                  # Local media files directory (gitignored)
-└── tests/                    # Vitest unit & integration test suite
+src/
+├── lib/
+│   ├── validation/
+│   │   └── ssrf.ts              # High-security SSRF & private IP blocker
+│   └── platforms/
+│       ├── types.ts             # Unified MediaInspectResult & IPlatformAdapter interfaces
+│       ├── direct.ts            # Direct media file prober & streaming adapter
+│       ├── youtube.ts           # Official YouTube oEmbed adapter
+│       ├── tiktok.ts            # Official TikTok oEmbed adapter
+│       ├── instagram.ts         # Official Instagram oEmbed adapter
+│       ├── unsupported.ts       # Honest transparent handler for restricted platforms
+│       └── index.ts             # Platform detector and inspection dispatcher
+├── app/
+│   ├── api/media/
+│   │   ├── inspect/route.ts     # POST /api/media/inspect
+│   │   └── download/route.ts    # GET /api/media/download (streaming proxy for permitted files)
+│   ├── privacy/page.tsx         # Privacy policy page
+│   ├── terms/page.tsx           # Terms of service page
+│   ├── layout.tsx               # SEO, OpenGraph metadata, and HTML layout
+│   └── page.tsx                 # Responsive MediaMate dashboard
+└── components/
+    ├── Header.tsx               # Brand logo & history button
+    ├── HeroSection.tsx          # Headline & value proposition
+    ├── MediaInspector.tsx       # URL input with sample links & platform selector
+    ├── ResultDisplay.tsx        # Verified media card, genuine preview & actions
+    ├── ToolsGrid.tsx            # Available media tools showcase
+    ├── HistoryDrawer.tsx        # Client-side local history slide-over
+    ├── FAQSection.tsx           # Common beginner questions & legal transparency
+    └── Footer.tsx               # Compliance notice & legal links
 ```
 
 ---
 
-## 🛠️ Quick Start & Setup
+## 🛠️ Getting Started ($0 Local Setup)
 
-### Prerequisites
-- Node.js 18+ (tested on Node v20/v22)
-- npm or pnpm
-
-### 1. Clone & Install Dependencies
+### 1. Install Dependencies
 ```bash
-git clone <repo-url>
-cd "insta folder"
 npm install
 ```
 
-### 2. Configure Environment
-Copy `.env.example` to `.env`:
-```bash
-cp .env.example .env
-```
-Default `.env` settings work out of the box with SQLite and Local Storage.
-
-### 3. Initialize Database
-Push the Prisma schema to create the local SQLite database:
-```bash
-npm run db:push
-```
-
-### 4. Run Tests
-Verify all flows, security guards, and parser edge cases:
+### 2. Run Test Suite
+MediaMate includes 35 automated tests covering SSRF security guards, direct media inspection, and platform adapters:
 ```bash
 npm test
 ```
 
-### 5. Launch Development Server
+### 3. Run Development Server
 ```bash
 npm run dev
 ```
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000) to inspect and preview media links.
 
 ---
 
-## 🧪 Testing Suite
+## 🚀 Free Deployment Guide
 
-Tests are built with **Vitest**:
-- `tests/parser.test.ts` (7 tests: Posts, Reels, plural reels, Stories, SSRF domains, malicious schemes)
-- `tests/security.test.ts` (6 tests: Bcrypt hashing, JWT generation/tamper verification, host whitelisting, XSS escaping)
-- `tests/rate-limiter.test.ts` (3 tests: Bucket consumption, 429 quota exhaustion, multi-IP isolation)
-- `tests/validator.test.ts` (7 tests: Strict Zod schema boundaries and validation error cases)
-- `tests/storage.test.ts` (1 test: Streaming writes, SHA-256 calculation, deletion)
+MediaMate is designed to deploy for **$0/month** on popular free-tier platforms:
 
-Run all tests:
-```bash
-npm test
-```
+### Option A: Vercel (Recommended)
+1. Push your repository to GitHub.
+2. Import the project into [Vercel](https://vercel.com).
+3. Vercel automatically detects Next.js. Click **Deploy**.
+4. Standard Serverless Functions handle `POST /api/media/inspect` and streaming downloads up to Vercel's free limits (10-second timeout, 4.5 MB serverless body limits for direct response streaming).
+
+### Option B: Render or Railway Free Tier
+1. Connect your repository.
+2. Set build command: `npm run build`.
+3. Set start command: `npm start`.

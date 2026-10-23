@@ -2,8 +2,22 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "InstaArchiver - High-Performance Instagram Media Downloader",
-  description: "Download and archive Instagram Reels, Posts, Carousels, and Stories in original high resolution.",
+  title: "MediaMate — Free Multi-Platform Media Toolkit",
+  description: "Your all-in-one media toolkit. Inspect, preview, and download supported media across platforms using official, authorized methods on a $0 budget.",
+  keywords: ["media toolkit", "media inspector", "video preview", "direct media download", "youtube thumbnail grabber", "oembed viewer"],
+  authors: [{ name: "MediaMate Team" }],
+  openGraph: {
+    title: "MediaMate — Free Multi-Platform Media Toolkit",
+    description: "Inspect, preview, and download supported media across platforms using official, authorized methods.",
+    url: "https://mediamate.toolkit",
+    siteName: "MediaMate",
+    locale: "en_US",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -13,7 +27,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className="bg-[#0b0d13] text-gray-100 antialiased selection:bg-pink-500 selection:text-white">
+      <body className="bg-[#060913] text-gray-100 antialiased selection:bg-sky-500 selection:text-white">
         {children}
       </body>
     </html>

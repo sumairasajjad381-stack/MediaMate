@@ -8,17 +8,20 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        insta: {
-          purple: "#833AB4",
-          pink: "#FD1D1D",
-          orange: "#F77737",
-          yellow: "#FCAF45",
-          blue: "#0095F6",
-          dark: "#121212",
-          card: "#1E1E1E",
-          border: "#2E2E2E"
-        }
-      }
+        navy: {
+          950: "#060913",
+          900: "#0a0f1d",
+          850: "#0e1529",
+          800: "#131c35",
+          700: "#1e2c52",
+        },
+        brand: {
+          blue: "#0284c7",
+          sky: "#38bdf8",
+          emerald: "#10b981",
+          teal: "#14b8a6",
+        },
+      },
     },
   },
   plugins: [],
