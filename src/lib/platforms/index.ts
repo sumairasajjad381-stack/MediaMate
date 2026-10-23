@@ -1,8 +1,9 @@
-import { IPlatformAdapter, MediaInspectResult, PlatformType } from "./types";
+import { IPlatformAdapter, MediaInspectResult } from "./types";
 import { DirectMediaAdapter } from "./direct";
 import { YouTubeAdapter } from "./youtube";
 import { TikTokAdapter } from "./tiktok";
 import { InstagramAdapter } from "./instagram";
+import { FacebookAdapter } from "./facebook";
 import { RestrictedPlatformAdapter } from "./unsupported";
 import { validateSafeUrl } from "../validation/ssrf";
 
@@ -11,17 +12,12 @@ const adapters: IPlatformAdapter[] = [
   new YouTubeAdapter(),
   new TikTokAdapter(),
   new InstagramAdapter(),
+  new FacebookAdapter(),
   new RestrictedPlatformAdapter(
     "pinterest",
     "Pinterest",
     ["pinterest.com", "pin.it"],
     "Pinterest does not offer a free public oEmbed or media download API. To avoid violating terms, automated scraping is disabled."
-  ),
-  new RestrictedPlatformAdapter(
-    "facebook",
-    "Facebook",
-    ["facebook.com", "fb.watch"],
-    "Facebook Graph API requires registered Meta App review and commercial credentials, which cannot be provided on a $0 budget."
   ),
 ];
 

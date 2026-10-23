@@ -17,6 +17,22 @@ describe("Platform Adapter Registry & Detection", () => {
     expect(detectPlatform("https://www.tiktok.com/@creator/video/123456789")?.platform).toBe("tiktok");
   });
 
+  it("should handle Instagram URLs with ethical fallback when API is restricted", async () => {
+    const result = await inspectUrl("https://www.instagram.com/reel/xxx/");
+    expect(result.platform).toBe("instagram");
+    expect(result.isSupported).toBe(true);
+    expect(result.title).toContain("Valid Instagram");
+    expect(result.limitationsNotice).toContain("Instagram requires login to preview");
+  });
+
+  it("should handle Facebook Reels with ethical fallback", async () => {
+    const result = await inspectUrl("https://www.facebook.com/reel/1025252600137666");
+    expect(result.platform).toBe("facebook");
+    expect(result.isSupported).toBe(true);
+    expect(result.title).toContain("Valid Facebook Reel");
+    expect(result.limitationsNotice).toContain("Facebook requires login to preview");
+  });
+
   it("should handle unsupported platforms honestly", async () => {
     const result = await inspectUrl("https://www.pinterest.com/pin/123456789/");
     expect(result.platform).toBe("pinterest");

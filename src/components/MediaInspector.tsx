@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, Loader2, Clipboard, Globe, AlertCircle } from "lucide-react";
+import { Search, Loader2, Clipboard, Globe, Info } from "lucide-react";
 
 interface MediaInspectorProps {
   onInspect: (url: string, platform?: string) => Promise<void>;
@@ -107,10 +107,10 @@ export function MediaInspector({ onInspect, isLoading, error }: MediaInspectorPr
         </div>
       </form>
 
-      {/* Error Message Display */}
+      {/* Friendly Light Info Box (No harsh red errors) */}
       {error && (
-        <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm flex items-start gap-2.5">
-          <AlertCircle className="w-4 h-4 shrink-0 text-red-500 mt-0.5" />
+        <div className="p-3.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-700 text-sm flex items-start gap-2.5 shadow-xs">
+          <Info className="w-4 h-4 shrink-0 text-blue-600 mt-0.5" />
           <span>{error}</span>
         </div>
       )}

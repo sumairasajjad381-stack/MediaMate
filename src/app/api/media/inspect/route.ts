@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
       data: result,
     });
   } catch (err) {
+    console.error("API Inspect Error:", err);
     return NextResponse.json(
       {
         success: false,

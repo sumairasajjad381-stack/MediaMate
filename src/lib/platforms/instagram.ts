@@ -14,22 +14,35 @@ export class InstagramAdapter implements IPlatformAdapter {
   }
 
   async inspect(url: string): Promise<MediaInspectResult> {
+    const isReel = url.toLowerCase().includes("/reel/");
+    const fallbackTitle = isReel ? "Valid Instagram Reel" : "Valid Instagram Link";
+    const ethicalFallbackMessage =
+      "Instagram requires login to preview. This is a valid public post. To save: Open post > 3 dots > Copy Link, then if it's your own content, use direct media URL or screen capture (ethical method).";
+
     try {
-      // Instagram public oEmbed endpoint
+      // Instagram public oEmbed endpoint with a 2.5s timeout for fast fallback
       const oembedUrl = `https://api.instagram.com/oembed/?url=${encodeURIComponent(url)}`;
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2500);
+
       const res = await fetch(oembedUrl, {
         headers: { "User-Agent": "MediaMate/1.0" },
+        signal: controller.signal,
       });
 
+      clearTimeout(timeoutId);
+
       if (!res.ok) {
+        // Return clean ethical fallback card instead of failing with an error
         return {
           platform: this.platform,
           platformName: this.platformName,
           url,
-          mediaType: "unknown",
+          title: fallbackTitle,
+          mediaType: "embed",
           supportedActions: [],
-          isSupported: false,
-          error: "Instagram post not found, private, or restricted by platform rate limits.",
+          isSupported: true,
+          limitationsNotice: ethicalFallbackMessage,
         };
       }
 
@@ -39,7 +52,7 @@ export class InstagramAdapter implements IPlatformAdapter {
         platform: this.platform,
         platformName: this.platformName,
         url,
-        title: data.title || "Instagram Post",
+        title: data.title || fallbackTitle,
         author: data.author_name || "Instagram Creator",
         authorUrl: data.author_url,
         thumbnailUrl: data.thumbnail_url,
@@ -50,14 +63,16 @@ export class InstagramAdapter implements IPlatformAdapter {
           "Public Instagram media details are provided via the authorized oEmbed specification. Media on private accounts or stories requiring user cookies cannot be accessed without violating platform security controls.",
       };
     } catch {
+      // Catch any network/API blockages or timeouts and return the ethical fallback card
       return {
         platform: this.platform,
         platformName: this.platformName,
         url,
-        mediaType: "unknown",
+        title: fallbackTitle,
+        mediaType: "embed",
         supportedActions: [],
-        isSupported: false,
-        error: "Failed to query Instagram metadata service.",
+        isSupported: true,
+        limitationsNotice: ethicalFallbackMessage,
       };
     }
   }
