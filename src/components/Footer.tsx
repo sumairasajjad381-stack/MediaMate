@@ -23,6 +23,18 @@ export function Footer() {
             <Link href="/instagram-video-downloader" className="hover:text-[#d62976] transition font-medium">
               Instagram Downloader
             </Link>
+            <Link href="/instagram-reels-downloader" className="hover:text-[#d62976] transition font-medium">
+              Reels Saver
+            </Link>
+            <Link href="/instagram-story-saver" className="hover:text-[#d62976] transition font-medium">
+              Story Saver
+            </Link>
+            <Link href="/instagram-photo-downloader" className="hover:text-[#d62976] transition font-medium">
+              Photo Downloader
+            </Link>
+            <Link href="/instagram-audio-mp3-extractor" className="hover:text-[#d62976] transition font-medium">
+              Audio Extractor
+            </Link>
             <Link href="/facebook-reels-downloader" className="hover:text-[#1877F2] transition font-medium">
               Facebook Reels
             </Link>

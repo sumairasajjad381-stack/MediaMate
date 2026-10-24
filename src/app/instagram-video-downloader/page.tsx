@@ -705,42 +705,36 @@ export default function InstagramVideoDownloaderPage() {
                 </div>
               </div>
 
-              {/* DISCOVER MORE / VIDEO SAVING SERVICE LINKS (COMPETITOR FEATURE) */}
+              {/* DISCOVER MORE / INTERNAL LINKING FOR GOOGLE RANKING */}
               <div className="bg-gray-50 border-t border-gray-100 p-4 sm:p-5">
                 <span className="text-xs font-bold text-gray-700 uppercase tracking-wider block mb-2.5">
-                  Discover More Video Saving Services:
+                  Dedicated Video Saving Services:
                 </span>
                 <div className="flex flex-wrap items-center gap-2 text-xs">
-                  <button
-                    onClick={() => setUrl(sampleUrl)}
-                    className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-pink-300 hover:text-[#d62976] text-gray-600 transition shadow-2xs font-medium"
+                  <Link
+                    href="/instagram-reels-downloader"
+                    className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-pink-300 hover:text-[#d62976] text-gray-700 transition shadow-2xs font-medium flex items-center gap-1.5"
                   >
-                    🎥 Download Instagram Reels
-                  </button>
-                  <button
-                    onClick={() => setUrl("https://www.instagram.com/stories/xxx")}
-                    className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-pink-300 hover:text-[#d62976] text-gray-600 transition shadow-2xs font-medium"
+                    <span>🎥 Instagram Reels Downloader</span>
+                  </Link>
+                  <Link
+                    href="/instagram-story-saver"
+                    className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-pink-300 hover:text-[#d62976] text-gray-700 transition shadow-2xs font-medium flex items-center gap-1.5"
                   >
-                    ⚡ Download Instagram Stories
-                  </button>
-                  <button
-                    onClick={() => setUrl("https://www.instagram.com/p/xxx")}
-                    className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-pink-300 hover:text-[#d62976] text-gray-600 transition shadow-2xs font-medium"
+                    <span>⚡ Instagram Story Saver</span>
+                  </Link>
+                  <Link
+                    href="/instagram-photo-downloader"
+                    className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-pink-300 hover:text-[#d62976] text-gray-700 transition shadow-2xs font-medium flex items-center gap-1.5"
                   >
-                    📸 Instagram Photo Downloader
-                  </button>
-                  <button
-                    onClick={() => setUrl(sampleUrl)}
-                    className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-pink-300 hover:text-[#d62976] text-gray-600 transition shadow-2xs font-medium"
+                    <span>📸 Photo & Carousel Downloader</span>
+                  </Link>
+                  <Link
+                    href="/instagram-audio-mp3-extractor"
+                    className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-pink-300 hover:text-[#d62976] text-gray-700 transition shadow-2xs font-medium flex items-center gap-1.5"
                   >
-                    📑 Carousel Slide Saver
-                  </button>
-                  <button
-                    onClick={() => setUrl(sampleUrl)}
-                    className="px-3 py-1.5 rounded-lg bg-white border border-gray-200 hover:border-pink-300 hover:text-[#d62976] text-gray-600 transition shadow-2xs font-medium"
-                  >
-                    🎵 Instagram Audio Extractor
-                  </button>
+                    <span>🎵 Audio & MP3 Extractor</span>
+                  </Link>
                 </div>
               </div>
             </div>

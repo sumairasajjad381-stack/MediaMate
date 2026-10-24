@@ -140,6 +140,81 @@ export default function HomePage() {
           </Link>
         </section>
 
+        {/* Dedicated Instagram Power Tools (Competitor Beater) */}
+        <section className="space-y-4 pt-4">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div>
+              <h2 className="text-xl font-extrabold text-gray-900">
+                Instagram Dedicated Downloaders
+              </h2>
+              <p className="text-xs text-gray-500">
+                Direct specialized tools for Reels, Stories, Photos and Audio
+              </p>
+            </div>
+            <Link
+              href="/instagram-video-downloader"
+              className="text-xs font-semibold text-[#d62976] hover:underline flex items-center gap-1"
+            >
+              <span>View Main Instagram Tool</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <Link
+              href="/instagram-reels-downloader"
+              className="p-4 rounded-xl bg-white border border-gray-200 hover:border-pink-300 hover:shadow-md transition text-center space-y-2 group"
+            >
+              <div className="w-10 h-10 rounded-xl bg-pink-50 text-[#d62976] mx-auto flex items-center justify-center group-hover:scale-105 transition-transform">
+                <span className="text-base font-bold">🎥</span>
+              </div>
+              <h3 className="font-bold text-xs sm:text-sm text-gray-900 group-hover:text-[#d62976]">
+                Reels Downloader
+              </h3>
+              <p className="text-[11px] text-gray-500">Vertical 9:16 1080p</p>
+            </Link>
+
+            <Link
+              href="/instagram-story-saver"
+              className="p-4 rounded-xl bg-white border border-gray-200 hover:border-pink-300 hover:shadow-md transition text-center space-y-2 group"
+            >
+              <div className="w-10 h-10 rounded-xl bg-pink-50 text-[#d62976] mx-auto flex items-center justify-center group-hover:scale-105 transition-transform">
+                <span className="text-base font-bold">⚡</span>
+              </div>
+              <h3 className="font-bold text-xs sm:text-sm text-gray-900 group-hover:text-[#d62976]">
+                Story Saver
+              </h3>
+              <p className="text-[11px] text-gray-500">Anonymous 24h & Highlights</p>
+            </Link>
+
+            <Link
+              href="/instagram-photo-downloader"
+              className="p-4 rounded-xl bg-white border border-gray-200 hover:border-pink-300 hover:shadow-md transition text-center space-y-2 group"
+            >
+              <div className="w-10 h-10 rounded-xl bg-pink-50 text-[#d62976] mx-auto flex items-center justify-center group-hover:scale-105 transition-transform">
+                <span className="text-base font-bold">📸</span>
+              </div>
+              <h3 className="font-bold text-xs sm:text-sm text-gray-900 group-hover:text-[#d62976]">
+                Photo & Carousel
+              </h3>
+              <p className="text-[11px] text-gray-500">Full Resolution JPGs</p>
+            </Link>
+
+            <Link
+              href="/instagram-audio-mp3-extractor"
+              className="p-4 rounded-xl bg-white border border-gray-200 hover:border-pink-300 hover:shadow-md transition text-center space-y-2 group"
+            >
+              <div className="w-10 h-10 rounded-xl bg-pink-50 text-[#d62976] mx-auto flex items-center justify-center group-hover:scale-105 transition-transform">
+                <span className="text-base font-bold">🎵</span>
+              </div>
+              <h3 className="font-bold text-xs sm:text-sm text-gray-900 group-hover:text-[#d62976]">
+                Audio Extractor
+              </h3>
+              <p className="text-[11px] text-gray-500">320kbps MP3 Audio</p>
+            </Link>
+          </div>
+        </section>
+
         {/* Minimal Trust Features (No long confusing text) */}
         <section className="border-t border-gray-100 pt-10 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center text-xs text-gray-500">
           <div className="flex flex-col items-center gap-2">
