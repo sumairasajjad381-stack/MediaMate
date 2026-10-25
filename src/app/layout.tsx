@@ -30,8 +30,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="bg-white text-gray-800 antialiased selection:bg-blue-100 selection:text-blue-900">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("mediamate_theme");if(t==="dark"||(!t&&window.matchMedia("(prefers-color-scheme: dark)").matches)){document.documentElement.classList.add("dark")}}catch(e){}})();`,
+          }}
+        />
+      </head>
+      <body className="bg-white dark:bg-gray-950 text-gray-800 dark:text-gray-100 antialiased selection:bg-blue-100 selection:text-blue-900 transition-colors duration-200">
         {children}
       </body>
     </html>

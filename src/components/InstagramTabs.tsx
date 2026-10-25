@@ -23,10 +23,10 @@ export function InstagramTabs({ activeTab }: InstagramTabsProps) {
             key={tab.id}
             href={tab.href}
             prefetch={true}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 backdrop-blur-md ${
               isActive
                 ? "insta-btn text-white shadow-md shadow-pink-500/25 scale-[1.02]"
-                : "bg-white hover:bg-pink-50 text-gray-700 hover:text-[#d62976] border border-gray-200"
+                : "bg-white/80 dark:bg-gray-900/80 hover:bg-pink-50 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 hover:text-[#d62976] dark:hover:text-pink-400 border border-gray-200 dark:border-gray-800"
             }`}
           >
             <span>{tab.icon}</span>

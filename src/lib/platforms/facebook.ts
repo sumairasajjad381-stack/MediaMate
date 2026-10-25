@@ -42,7 +42,7 @@ export class FacebookAdapter implements IPlatformAdapter {
       author: "Facebook Creator",
       mediaType: "video",
       thumbnailUrl: reelThumbnail,
-      supportedActions: ["preview", "download_video", "download_audio"],
+      supportedActions: ["preview", "download_file", "download_thumbnail"],
       isSupported: true,
       limitationsNotice:
         "Public Facebook media stream ready for 1080p Full HD download. Clean zero-watermark video file generated.",

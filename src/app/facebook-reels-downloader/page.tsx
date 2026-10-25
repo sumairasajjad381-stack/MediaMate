@@ -33,6 +33,8 @@ import {
   DownloadSuccessBanner,
   DownloadItemDetails,
 } from "@/components/DownloadSuccessModal";
+import { HumanErrorAlert } from "@/components/HumanErrorAlert";
+import { parseHumanError, HumanError } from "@/lib/humanErrors";
 import { MediaInspectResult } from "@/lib/platforms/types";
 
 const LOCAL_STORAGE_KEY = "mediamate_recent_history";
@@ -40,7 +42,7 @@ const LOCAL_STORAGE_KEY = "mediamate_recent_history";
 export default function FacebookReelsDownloaderPage() {
   const [url, setUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<HumanError | null>(null);
   const [inspectResult, setInspectResult] = useState<MediaInspectResult | null>(null);
   const [copied, setCopied] = useState(false);
   const [history, setHistory] = useState<MediaInspectResult[]>([]);
@@ -96,10 +98,10 @@ export default function FacebookReelsDownloaderPage() {
       if (json.data.isSupported) {
         saveToHistory(json.data);
       } else if (json.data.error) {
-        setError(json.data.error);
+        setError(parseHumanError(json.data.error));
       }
     } catch (err) {
-      setError((err as Error).message);
+      setError(parseHumanError(err));
     } finally {
       setIsLoading(false);
     }
@@ -272,12 +274,12 @@ export default function FacebookReelsDownloaderPage() {
               </div>
             </form>
 
-            {error && (
-              <div className="p-3.5 rounded-xl bg-[#f9fafb] border border-gray-200 text-gray-700 text-sm flex items-start gap-2.5 shadow-xs">
-                <Info className="w-4 h-4 shrink-0 text-blue-600 mt-0.5" />
-                <span>{error}</span>
-              </div>
-            )}
+            {/* Human Error Alert */}
+            <HumanErrorAlert
+              error={error}
+              onDismiss={() => setError(null)}
+              onRetry={handleInspect}
+            />
 
             <div className="flex flex-wrap items-center justify-center gap-2 pt-1 text-xs text-gray-500">
               <span>Test with Reel ID:</span>

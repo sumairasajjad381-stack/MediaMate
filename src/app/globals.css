@@ -56,6 +56,20 @@ body {
   box-shadow: 0 8px 30px rgba(214, 41, 118, 0.2);
 }
 
+/* Block All Intrusive Vignette Ads and Fullscreen Overlays (VideoDropper Formula) */
+#google_vignette,
+.google-auto-placed,
+ins.adsbygoogle[data-ad-status="unfilled"],
+.ins-vignette-overlay,
+[id*="google_vignette"] {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* Hide Next.js dev error overlays and bottom-left indicator badges */
 nextjs-portal,
 #__next-build-watcher,

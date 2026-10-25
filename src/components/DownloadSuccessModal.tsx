@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { fireConfetti } from "@/lib/confetti";
 import {
   CheckCircle2,
   X,
@@ -52,6 +53,12 @@ export function DownloadSuccessModal({
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [showFullPreview, setShowFullPreview] = useState(false);
 
+  useEffect(() => {
+    if (isOpen) {
+      fireConfetti({ particleCount: 120, origin: { x: 0.5, y: 0.55 } });
+    }
+  }, [isOpen]);
+
   if (!isOpen || !item) return null;
 
   const isFacebook = theme === "facebook" || item.platform === "facebook";
@@ -96,8 +103,8 @@ export function DownloadSuccessModal({
 
       {/* Main Card (Center on desktop, Bottom-sheet on mobile) */}
       <div
-        className={`relative z-10 w-full sm:max-w-lg bg-white rounded-t-[24px] sm:rounded-[20px] border-2 ${borderColorClass} shadow-2xl p-6 sm:p-8 space-y-5 transform transition-all duration-300 max-h-[92vh] overflow-y-auto ${
-          isFacebook ? "focus:ring-blue-100" : "focus:ring-pink-100"
+        className={`relative z-10 w-full sm:max-w-lg bg-white dark:bg-gray-900 rounded-t-[24px] sm:rounded-[20px] border-2 ${borderColorClass} shadow-2xl p-6 sm:p-8 space-y-5 transform transition-all duration-300 max-h-[92vh] overflow-y-auto ${
+          isFacebook ? "focus:ring-blue-100 dark:focus:ring-blue-950" : "focus:ring-pink-100 dark:focus:ring-pink-950"
         }`}
         style={{
           animation: "modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
@@ -107,7 +114,7 @@ export function DownloadSuccessModal({
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition"
+          className="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
@@ -116,22 +123,22 @@ export function DownloadSuccessModal({
         {/* TOP: Green tick animation + Title */}
         <div className="text-center space-y-2 pt-1">
           <div className="relative inline-flex items-center justify-center">
-            <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shadow-md animate-bounce-short">
-              <CheckCircle2 className="w-8 h-8 text-emerald-600 stroke-[2.5]" />
+            <div className="w-14 h-14 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-md animate-bounce-short">
+              <CheckCircle2 className="w-8 h-8 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
             </div>
             <div className="absolute inset-0 rounded-full bg-emerald-400/20 animate-ping pointer-events-none" />
           </div>
 
-          <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900 tracking-tight">
+          <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white tracking-tight">
             Download Successful!
           </h3>
-          <p className="text-xs sm:text-sm text-gray-500">
+          <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">
             Saved to your device gallery / download folder
           </p>
         </div>
 
         {/* MIDDLE: PREVIEW OF DOWNLOADED ITEM */}
-        <div className="bg-gray-50 rounded-2xl border border-gray-200 p-3 sm:p-4 space-y-3">
+        <div className="bg-gray-50 dark:bg-gray-800/60 rounded-2xl border border-gray-200 dark:border-gray-700 p-3 sm:p-4 space-y-3">
           {/* Video or Reel Preview */}
           {(item.mediaType === "video" || item.mediaType === "story") && (
             <div className="space-y-2">
@@ -280,9 +287,9 @@ export function DownloadSuccessModal({
           <button
             type="button"
             onClick={handleDownloadAgain}
-            className="w-full py-3 px-6 rounded-xl font-semibold text-xs sm:text-sm text-gray-700 bg-gray-100 hover:bg-gray-200 border border-gray-200 flex items-center justify-center gap-2 transition"
+            className="w-full py-3 px-6 rounded-xl font-semibold text-xs sm:text-sm text-gray-700 dark:text-gray-200 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 flex items-center justify-center gap-2 transition"
           >
-            <Download className="w-4 h-4 text-gray-600" />
+            <Download className="w-4 h-4 text-gray-600 dark:text-gray-300" />
             <span>Download Again</span>
           </button>
 
@@ -290,9 +297,9 @@ export function DownloadSuccessModal({
           <button
             type="button"
             onClick={handleViewHistory}
-            className="w-full py-2.5 px-6 rounded-xl font-medium text-xs text-gray-500 hover:text-gray-900 hover:bg-gray-50 flex items-center justify-center gap-2 transition"
+            className="w-full py-2.5 px-6 rounded-xl font-medium text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/60 flex items-center justify-center gap-2 transition"
           >
-            <History className="w-3.5 h-3.5 text-blue-600" />
+            <History className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
             <span>View in History ({historyCount})</span>
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block" />
           </button>
@@ -322,16 +329,16 @@ export function DownloadSuccessBanner({
   if (!item) return null;
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 text-gray-800 text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs animate-fadeIn">
+    <div className="w-full max-w-2xl mx-auto p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 text-gray-800 dark:text-gray-100 text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-between gap-3 shadow-xs animate-fadeIn backdrop-blur-md">
       <div className="flex items-center gap-2.5 min-w-0 w-full sm:w-auto">
-        <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+        <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
         <div className="truncate">
-          <span className="font-bold text-emerald-900">✓ Downloaded: </span>
-          <span className="font-mono text-gray-700">{item.filename}</span>
-          <span className="text-gray-400 mx-1.5">|</span>
-          <span className="text-gray-600">Size: {item.size || "8.2MB"}</span>
-          <span className="text-gray-400 mx-1.5">|</span>
-          <span className="text-gray-600">Quality: {item.quality || "1080p"}</span>
+          <span className="font-bold text-emerald-900 dark:text-emerald-300">✓ Downloaded: </span>
+          <span className="font-mono text-gray-700 dark:text-gray-300">{item.filename}</span>
+          <span className="text-gray-400 dark:text-gray-600 mx-1.5">|</span>
+          <span className="text-gray-600 dark:text-gray-400">Size: {item.size || "8.2MB"}</span>
+          <span className="text-gray-400 dark:text-gray-600 mx-1.5">|</span>
+          <span className="text-gray-600 dark:text-gray-400">Quality: {item.quality || "1080p"}</span>
         </div>
       </div>
 
@@ -348,7 +355,7 @@ export function DownloadSuccessBanner({
         <button
           type="button"
           onClick={onOpenFileClick}
-          className="px-3 py-1.5 rounded-lg bg-white hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-semibold text-xs flex items-center gap-1 transition"
+          className="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-900 hover:bg-emerald-100 dark:hover:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800 font-semibold text-xs flex items-center gap-1 transition"
         >
           <FolderOpen className="w-3.5 h-3.5" />
           <span>Open File</span>
@@ -357,7 +364,7 @@ export function DownloadSuccessBanner({
         <button
           type="button"
           onClick={onDismiss}
-          className="p-1 text-gray-400 hover:text-gray-600 transition"
+          className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition"
           title="Dismiss"
         >
           <X className="w-3.5 h-3.5" />
