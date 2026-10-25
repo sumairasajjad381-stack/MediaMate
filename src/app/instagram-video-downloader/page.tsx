@@ -42,6 +42,7 @@ import {
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { HistoryDrawer } from "@/components/HistoryDrawer";
+import { InstagramTabs } from "@/components/InstagramTabs";
 import { MediaInspectResult } from "@/lib/platforms/types";
 
 const LOCAL_STORAGE_KEY = "mediamate_recent_history";
@@ -62,6 +63,7 @@ export default function InstagramVideoDownloaderPage() {
   const [showQrModal, setShowQrModal] = useState(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [selectedFormat, setSelectedFormat] = useState<"1080p" | "720p" | "audio" | "cover">("1080p");
+  const [activeTab, setActiveTab] = useState<"all" | "reels" | "stories" | "photos" | "audio">("all");
 
   // Load history from browser localStorage
   useEffect(() => {
@@ -92,10 +94,22 @@ export default function InstagramVideoDownloaderPage() {
       setIsLoading(true);
       setError(null);
 
+      // Support direct link OR @username
+      let targetUrl = url.trim();
+      if (targetUrl.startsWith("@")) {
+        targetUrl = `https://www.instagram.com/${targetUrl.slice(1)}/`;
+      } else if (!targetUrl.startsWith("http://") && !targetUrl.startsWith("https://")) {
+        if (targetUrl.includes("instagram.com")) {
+          targetUrl = `https://${targetUrl}`;
+        } else {
+          targetUrl = `https://www.instagram.com/${targetUrl}/`;
+        }
+      }
+
       const res = await fetch("/api/media/inspect", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: url.trim(), platform: "instagram" }),
+        body: JSON.stringify({ url: targetUrl, platform: "instagram" }),
       });
 
       const json = await res.json();
@@ -321,18 +335,31 @@ export default function InstagramVideoDownloaderPage() {
             </span>
           </div>
 
+          {/* Quick Switcher Tabs (Competitor Killer Feature from Snapgram & VideoDropper) */}
+          <InstagramTabs activeTab="all" />
+
           {/* Input Box with Pink Focus & Shadow */}
-          <div className="pt-4 max-w-2xl mx-auto space-y-3">
+          <div className="pt-2 max-w-2xl mx-auto space-y-3">
             <form onSubmit={handleInspect}>
               <div className="flex flex-col sm:flex-row items-center gap-2 p-2 bg-white rounded-2xl border border-gray-200 google-shadow transition-all focus-within:border-[#d62976] focus-within:ring-2 focus-within:ring-pink-100 hover:border-pink-300">
                 <div className="flex items-center flex-1 w-full px-3 gap-2">
                   <Search className="w-4 h-4 text-gray-400 shrink-0" />
                   <input
-                    type="url"
+                    type="text"
                     required
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
-                    placeholder="Paste Instagram Reel, Story, or Post URL..."
+                    placeholder={
+                      activeTab === "stories"
+                        ? "Paste Story link or @username..."
+                        : activeTab === "reels"
+                        ? "Paste Instagram Reel link (instagram.com/reel/...)"
+                        : activeTab === "photos"
+                        ? "Paste Photo or Carousel link..."
+                        : activeTab === "audio"
+                        ? "Paste Reel link to extract 320kbps MP3..."
+                        : "Paste Instagram Reel, Story, Post link, or @username..."
+                    }
                     className="w-full bg-transparent border-none text-gray-900 placeholder-gray-400 focus:outline-none text-sm sm:text-base py-2.5"
                     disabled={isLoading}
                   />

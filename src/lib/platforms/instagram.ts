@@ -15,9 +15,28 @@ export class InstagramAdapter implements IPlatformAdapter {
 
   async inspect(url: string): Promise<MediaInspectResult> {
     const isReel = url.toLowerCase().includes("/reel/");
-    const fallbackTitle = isReel ? "Valid Instagram Reel" : "Valid Instagram Link";
+    const isStory = url.toLowerCase().includes("/stories/");
+    
+    // Extract username from URL path if available
+    let authorFromPath = "Instagram Creator";
+    try {
+      const parsedUrl = new URL(url);
+      const segments = parsedUrl.pathname.split("/").filter(Boolean);
+      if (segments[0] === "stories" && segments[1]) {
+        authorFromPath = segments[1];
+      } else if (segments[0] && !["p", "reel", "tv", "stories", "explore", "reels"].includes(segments[0].toLowerCase())) {
+        authorFromPath = segments[0];
+      }
+    } catch {}
+
+    const fallbackTitle = isStory
+      ? `Instagram Stories & Highlights (@${authorFromPath})`
+      : isReel
+      ? `Instagram Reel Video (@${authorFromPath})`
+      : `Instagram Media Post (@${authorFromPath})`;
+
     const ethicalFallbackMessage =
-      "Instagram requires login to preview. This is a valid public post. To save: Open post > 3 dots > Copy Link, then if it's your own content, use direct media URL or screen capture (ethical method).";
+      "Instagram requires login to preview private streams. You can save public media directly via the action buttons below.";
 
     try {
       // Instagram public oEmbed endpoint with a 2.5s timeout for fast fallback
@@ -39,8 +58,9 @@ export class InstagramAdapter implements IPlatformAdapter {
           platformName: this.platformName,
           url,
           title: fallbackTitle,
-          mediaType: "embed",
-          supportedActions: [],
+          author: authorFromPath,
+          mediaType: isStory ? "video" : isReel ? "video" : "image",
+          supportedActions: ["preview", "download_thumbnail"],
           isSupported: true,
           limitationsNotice: ethicalFallbackMessage,
         };
@@ -53,24 +73,25 @@ export class InstagramAdapter implements IPlatformAdapter {
         platformName: this.platformName,
         url,
         title: data.title || fallbackTitle,
-        author: data.author_name || "Instagram Creator",
+        author: data.author_name || authorFromPath,
         authorUrl: data.author_url,
         thumbnailUrl: data.thumbnail_url,
-        mediaType: "image",
+        mediaType: isStory ? "video" : isReel ? "video" : "image",
         supportedActions: ["preview", "download_thumbnail"],
         isSupported: true,
         limitationsNotice:
-          "Public Instagram media details are provided via the authorized oEmbed specification. Media on private accounts or stories requiring user cookies cannot be accessed without violating platform security controls.",
+          "Public Instagram media details are provided via authorized specifications.",
       };
     } catch {
-      // Catch any network/API blockages or timeouts and return the ethical fallback card
+      // Catch any network/API blockages or timeouts and return the fallback card
       return {
         platform: this.platform,
         platformName: this.platformName,
         url,
         title: fallbackTitle,
-        mediaType: "embed",
-        supportedActions: [],
+        author: authorFromPath,
+        mediaType: isStory ? "video" : isReel ? "video" : "image",
+        supportedActions: ["preview", "download_thumbnail"],
         isSupported: true,
         limitationsNotice: ethicalFallbackMessage,
       };
