@@ -26,6 +26,11 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { HistoryDrawer } from "@/components/HistoryDrawer";
 import { InstagramTabs } from "@/components/InstagramTabs";
+import {
+  DownloadSuccessModal,
+  DownloadSuccessBanner,
+  DownloadItemDetails,
+} from "@/components/DownloadSuccessModal";
 import { MediaInspectResult } from "@/lib/platforms/types";
 
 const LOCAL_STORAGE_KEY = "mediamate_recent_history";
@@ -38,6 +43,36 @@ export default function InstagramPhotoDownloaderPage() {
   const [history, setHistory] = useState<MediaInspectResult[]>([]);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
+  const [highlightHistory, setHighlightHistory] = useState(false);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [downloadSuccessItem, setDownloadSuccessItem] = useState<DownloadItemDetails | null>(null);
+
+  const triggerDownload = (
+    quality: string = "HD Original",
+    size: string = "2.8 MB",
+    mediaType: "image" | "carousel" = "image"
+  ) => {
+    if (!inspectResult) return;
+    const item: DownloadItemDetails = {
+      title: inspectResult.title || "Instagram Photo HD",
+      filename: "instagram_photo_hd.jpg",
+      size,
+      quality,
+      mediaType,
+      thumbnailUrl: inspectResult.thumbnailUrl,
+      downloadUrl: inspectResult.thumbnailUrl || inspectResult.url,
+      author: inspectResult.author || "instagram_user",
+      platform: "instagram",
+    };
+
+    setDownloadSuccessItem(item);
+    setShowDownloadModal(true);
+    saveToHistory(inspectResult);
+    setHighlightHistory(true);
+    setTimeout(() => setHighlightHistory(false), 4500);
+
+    window.open(inspectResult.thumbnailUrl || inspectResult.url, "_blank");
+  };
 
   useEffect(() => {
     try {
@@ -136,6 +171,7 @@ export default function InstagramPhotoDownloaderPage() {
       <Header
         historyCount={history.length}
         onOpenHistory={() => setIsHistoryOpen(true)}
+        highlightHistory={highlightHistory}
       />
 
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-8 sm:py-14 space-y-16">
@@ -229,6 +265,16 @@ export default function InstagramPhotoDownloaderPage() {
           </div>
         </section>
 
+        {/* INLINE SUCCESS PREVIEW BAR */}
+        {downloadSuccessItem && (
+          <DownloadSuccessBanner
+            item={downloadSuccessItem}
+            onPreviewClick={() => setShowDownloadModal(true)}
+            onOpenFileClick={() => window.open(downloadSuccessItem.downloadUrl, "_blank")}
+            onDismiss={() => setDownloadSuccessItem(null)}
+          />
+        )}
+
         {/* RESULT SECTION */}
         {inspectResult && inspectResult.isSupported && (
           <section className="animate-fadeIn">
@@ -271,15 +317,14 @@ export default function InstagramPhotoDownloaderPage() {
                   </div>
 
                   <div className="space-y-3 pt-2">
-                    <a
-                      href={inspectResult.thumbnailUrl || inspectResult.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      type="button"
+                      onClick={() => triggerDownload("HD Original", "2.8 MB", "image")}
                       className="w-full py-4 px-6 rounded-2xl font-bold text-base text-white shadow-lg insta-btn flex items-center justify-center gap-3 transition transform hover:scale-[1.01] active:scale-[0.99]"
                     >
                       <Download className="w-5 h-5 text-white" />
                       <span>Download Full Resolution Image</span>
-                    </a>
+                    </button>
 
                     <button
                       type="button"
@@ -319,6 +364,17 @@ export default function InstagramPhotoDownloaderPage() {
           </div>
         </section>
       </main>
+
+      {/* INSTANT PREVIEW & SUCCESS MODAL */}
+      <DownloadSuccessModal
+        isOpen={showDownloadModal}
+        onClose={() => setShowDownloadModal(false)}
+        item={downloadSuccessItem}
+        historyCount={history.length}
+        onOpenHistory={() => setIsHistoryOpen(true)}
+        onDownloadAgain={() => triggerDownload()}
+        theme="instagram"
+      />
 
       <Footer />
 

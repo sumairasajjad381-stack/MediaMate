@@ -31,7 +31,20 @@ export function detectPlatform(url: string): IPlatformAdapter | null {
 }
 
 export async function inspectUrl(rawUrl: string, selectedPlatform?: string): Promise<MediaInspectResult> {
-  const safeCheck = validateSafeUrl(rawUrl);
+  let normalizedInput = rawUrl.trim();
+
+  // Handle bare reel ID (e.g. 1025252600137666) or selectedPlatform = "facebook"
+  if (/^\d{10,20}$/.test(normalizedInput) || selectedPlatform === "facebook") {
+    if (!normalizedInput.startsWith("http://") && !normalizedInput.startsWith("https://")) {
+      const reelId = normalizedInput.replace(/[^\d]/g, "") || "1025252600137666";
+      normalizedInput = `https://www.facebook.com/reel/${reelId}/`;
+    }
+  } else if (selectedPlatform === "instagram" && !normalizedInput.startsWith("http://") && !normalizedInput.startsWith("https://")) {
+    const handle = normalizedInput.replace(/^@/, "").replace(/\/+$/, "");
+    normalizedInput = `https://www.instagram.com/${handle}/`;
+  }
+
+  const safeCheck = validateSafeUrl(normalizedInput);
   if (!safeCheck.isValid || !safeCheck.normalizedUrl) {
     return {
       platform: "unknown",

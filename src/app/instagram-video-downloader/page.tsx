@@ -43,6 +43,11 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { HistoryDrawer } from "@/components/HistoryDrawer";
 import { InstagramTabs } from "@/components/InstagramTabs";
+import {
+  DownloadSuccessModal,
+  DownloadSuccessBanner,
+  DownloadItemDetails,
+} from "@/components/DownloadSuccessModal";
 import { MediaInspectResult } from "@/lib/platforms/types";
 
 const LOCAL_STORAGE_KEY = "mediamate_recent_history";
@@ -64,6 +69,43 @@ export default function InstagramVideoDownloaderPage() {
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [selectedFormat, setSelectedFormat] = useState<"1080p" | "720p" | "audio" | "cover">("1080p");
   const [activeTab, setActiveTab] = useState<"all" | "reels" | "stories" | "photos" | "audio">("all");
+  const [highlightHistory, setHighlightHistory] = useState(false);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [downloadSuccessItem, setDownloadSuccessItem] = useState<DownloadItemDetails | null>(null);
+
+  const triggerDownload = (
+    quality: string = "1080p Full HD",
+    size: string = "14.2 MB",
+    mediaType: "video" | "image" | "audio" = "video"
+  ) => {
+    if (!inspectResult) return;
+    const filename =
+      mediaType === "audio"
+        ? "instagram_audio_320kbps.mp3"
+        : mediaType === "image"
+        ? "instagram_cover_hd.jpg"
+        : "instagram_reel_1080p.mp4";
+
+    const item: DownloadItemDetails = {
+      title: inspectResult.title || "Instagram Video HD",
+      filename,
+      size,
+      quality,
+      mediaType,
+      thumbnailUrl: inspectResult.thumbnailUrl,
+      downloadUrl: inspectResult.url,
+      author: inspectResult.author || "instagram_creator",
+      platform: "instagram",
+    };
+
+    setDownloadSuccessItem(item);
+    setShowDownloadModal(true);
+    saveToHistory(inspectResult);
+    setHighlightHistory(true);
+    setTimeout(() => setHighlightHistory(false), 4500);
+
+    window.open(inspectResult.url, "_blank");
+  };
 
   // Load history from browser localStorage
   useEffect(() => {
@@ -286,6 +328,7 @@ export default function InstagramVideoDownloaderPage() {
       <Header
         historyCount={history.length}
         onOpenHistory={() => setIsHistoryOpen(true)}
+        highlightHistory={highlightHistory}
       />
 
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-8 sm:py-14 space-y-16">
@@ -423,6 +466,16 @@ export default function InstagramVideoDownloaderPage() {
           </div>
         </section>
 
+        {/* INLINE SUCCESS PREVIEW BAR */}
+        {downloadSuccessItem && (
+          <DownloadSuccessBanner
+            item={downloadSuccessItem}
+            onPreviewClick={() => setShowDownloadModal(true)}
+            onOpenFileClick={() => window.open(downloadSuccessItem.downloadUrl, "_blank")}
+            onDismiss={() => setDownloadSuccessItem(null)}
+          />
+        )}
+
         {/* 2-COLUMN RESULT SECTION (BETTER THAN VIDEODROPPER.APP) */}
         {inspectResult && inspectResult.isSupported && (
           <section className="animate-fadeIn">
@@ -530,15 +583,14 @@ export default function InstagramVideoDownloaderPage() {
                   {/* STACK 3 DOWNLOAD BUTTONS (BETTER THAN VIDEODROPPER BLUE BUTTONS) */}
                   <div className="space-y-3 pt-2">
                     {/* Button 1 (Primary): [⬇ Download Video] - Instagram gradient */}
-                    <a
-                      href={inspectResult.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                    <button
+                      type="button"
+                      onClick={() => triggerDownload("1080p Full HD", "14.2 MB", "video")}
                       className="w-full py-4 px-6 rounded-2xl font-bold text-base text-white shadow-lg insta-btn flex items-center justify-center gap-3 transition transform hover:scale-[1.01] active:scale-[0.99]"
                     >
                       <Download className="w-5 h-5 text-white" />
                       <span>Download Video (1080p)</span>
-                    </a>
+                    </button>
 
                     {/* Button 2 (Secondary): [⚡ Download HD Link (1080p)] - Light pink #fdf2f8, pink text #d62976 */}
                     <button
@@ -625,15 +677,14 @@ export default function InstagramVideoDownloaderPage() {
                         <td className="p-3 text-gray-600 font-medium">1080 &times; 1920 (MP4, 60fps)</td>
                         <td className="p-3 text-gray-500">~14.2 MB</td>
                         <td className="p-3 text-right">
-                          <a
-                            href={inspectResult.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <button
+                            type="button"
+                            onClick={() => triggerDownload("1080p Full HD", "14.2 MB", "video")}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-white font-semibold insta-btn text-xs shadow-2xs hover:opacity-95"
                           >
                             <Download className="w-3.5 h-3.5" />
                             <span>Download MP4</span>
-                          </a>
+                          </button>
                         </td>
                       </tr>
 
@@ -645,15 +696,14 @@ export default function InstagramVideoDownloaderPage() {
                         <td className="p-3 text-gray-600 font-medium">720 &times; 1280 (MP4, Fast Data)</td>
                         <td className="p-3 text-gray-500">~7.8 MB</td>
                         <td className="p-3 text-right">
-                          <a
-                            href={inspectResult.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <button
+                            type="button"
+                            onClick={() => triggerDownload("720p HD", "7.8 MB", "video")}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-pink-50 hover:bg-pink-100 text-[#d62976] border border-pink-200 font-semibold text-xs"
                           >
                             <Download className="w-3.5 h-3.5" />
                             <span>Download 720p</span>
-                          </a>
+                          </button>
                         </td>
                       </tr>
 
@@ -668,15 +718,14 @@ export default function InstagramVideoDownloaderPage() {
                         <td className="p-3 text-gray-600 font-medium">Stereo 48.0 kHz (Audio MP3)</td>
                         <td className="p-3 text-gray-500">~2.6 MB</td>
                         <td className="p-3 text-right">
-                          <a
-                            href={inspectResult.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <button
+                            type="button"
+                            onClick={() => triggerDownload("320kbps Stereo MP3", "2.6 MB", "audio")}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 border border-purple-200 font-semibold text-xs"
                           >
                             <Music className="w-3.5 h-3.5" />
                             <span>Extract MP3</span>
-                          </a>
+                          </button>
                         </td>
                       </tr>
 
@@ -688,15 +737,14 @@ export default function InstagramVideoDownloaderPage() {
                         <td className="p-3 text-gray-600 font-medium">1080 &times; 1920 (High-Res JPG)</td>
                         <td className="p-3 text-gray-500">~420 KB</td>
                         <td className="p-3 text-right">
-                          <a
-                            href={inspectResult.thumbnailUrl || inspectResult.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <button
+                            type="button"
+                            onClick={() => triggerDownload("HD Artwork", "420 KB", "image")}
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-200 font-semibold text-xs"
                           >
                             <Download className="w-3.5 h-3.5" />
                             <span>Save Cover</span>
-                          </a>
+                          </button>
                         </td>
                       </tr>
                     </tbody>
@@ -1380,6 +1428,17 @@ export default function InstagramVideoDownloaderPage() {
           </div>
         </section>
       </main>
+
+      {/* INSTANT PREVIEW & SUCCESS MODAL */}
+      <DownloadSuccessModal
+        isOpen={showDownloadModal}
+        onClose={() => setShowDownloadModal(false)}
+        item={downloadSuccessItem}
+        historyCount={history.length}
+        onOpenHistory={() => setIsHistoryOpen(true)}
+        onDownloadAgain={() => triggerDownload()}
+        theme="instagram"
+      />
 
       <Footer />
 

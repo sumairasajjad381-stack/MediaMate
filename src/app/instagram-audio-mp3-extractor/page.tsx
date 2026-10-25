@@ -26,6 +26,11 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { HistoryDrawer } from "@/components/HistoryDrawer";
 import { InstagramTabs } from "@/components/InstagramTabs";
+import {
+  DownloadSuccessModal,
+  DownloadSuccessBanner,
+  DownloadItemDetails,
+} from "@/components/DownloadSuccessModal";
 import { MediaInspectResult } from "@/lib/platforms/types";
 
 const LOCAL_STORAGE_KEY = "mediamate_recent_history";
@@ -39,6 +44,36 @@ export default function InstagramAudioExtractorPage() {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [highlightHistory, setHighlightHistory] = useState(false);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [downloadSuccessItem, setDownloadSuccessItem] = useState<DownloadItemDetails | null>(null);
+
+  const triggerDownload = (
+    quality: string = "320kbps Stereo MP3",
+    size: string = "4.5 MB",
+    mediaType: "audio" = "audio"
+  ) => {
+    if (!inspectResult) return;
+    const item: DownloadItemDetails = {
+      title: inspectResult.title || "Instagram Audio Track",
+      filename: "instagram_audio_320kbps.mp3",
+      size,
+      quality,
+      mediaType,
+      thumbnailUrl: inspectResult.thumbnailUrl,
+      downloadUrl: inspectResult.url,
+      author: inspectResult.author || "instagram_creator",
+      platform: "instagram",
+    };
+
+    setDownloadSuccessItem(item);
+    setShowDownloadModal(true);
+    saveToHistory(inspectResult);
+    setHighlightHistory(true);
+    setTimeout(() => setHighlightHistory(false), 4500);
+
+    window.open(inspectResult.url, "_blank");
+  };
 
   useEffect(() => {
     try {
@@ -137,6 +172,7 @@ export default function InstagramAudioExtractorPage() {
       <Header
         historyCount={history.length}
         onOpenHistory={() => setIsHistoryOpen(true)}
+        highlightHistory={highlightHistory}
       />
 
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-8 sm:py-14 space-y-16">
@@ -230,6 +266,16 @@ export default function InstagramAudioExtractorPage() {
           </div>
         </section>
 
+        {/* INLINE SUCCESS PREVIEW BAR */}
+        {downloadSuccessItem && (
+          <DownloadSuccessBanner
+            item={downloadSuccessItem}
+            onPreviewClick={() => setShowDownloadModal(true)}
+            onOpenFileClick={() => window.open(downloadSuccessItem.downloadUrl, "_blank")}
+            onDismiss={() => setDownloadSuccessItem(null)}
+          />
+        )}
+
         {/* RESULT SECTION */}
         {inspectResult && inspectResult.isSupported && (
           <section className="animate-fadeIn">
@@ -253,15 +299,14 @@ export default function InstagramAudioExtractorPage() {
                     </div>
                   </div>
 
-                  <a
-                    href={inspectResult.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    type="button"
+                    onClick={() => triggerDownload("320kbps MP3", "4.5 MB", "audio")}
                     className="px-6 py-3.5 rounded-2xl font-bold text-sm text-white shadow-md insta-btn flex items-center gap-2 hover:opacity-95"
                   >
                     <Download className="w-4 h-4" />
                     <span>Download MP3 Audio (320kbps)</span>
-                  </a>
+                  </button>
                 </div>
 
                 {/* AUDIO WAVEFORM PREVIEW */}
@@ -310,6 +355,17 @@ export default function InstagramAudioExtractorPage() {
           </div>
         </section>
       </main>
+
+      {/* INSTANT PREVIEW & SUCCESS MODAL */}
+      <DownloadSuccessModal
+        isOpen={showDownloadModal}
+        onClose={() => setShowDownloadModal(false)}
+        item={downloadSuccessItem}
+        historyCount={history.length}
+        onOpenHistory={() => setIsHistoryOpen(true)}
+        onDownloadAgain={() => triggerDownload()}
+        theme="instagram"
+      />
 
       <Footer />
 

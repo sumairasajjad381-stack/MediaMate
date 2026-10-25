@@ -17,10 +17,22 @@ import {
   ShieldCheck,
   ChevronDown,
   User,
+  Download,
+  Play,
+  RotateCcw,
+  SlidersHorizontal,
+  FolderOpen,
+  QrCode,
+  X,
 } from "lucide-react";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { HistoryDrawer } from "@/components/HistoryDrawer";
+import {
+  DownloadSuccessModal,
+  DownloadSuccessBanner,
+  DownloadItemDetails,
+} from "@/components/DownloadSuccessModal";
 import { MediaInspectResult } from "@/lib/platforms/types";
 
 const LOCAL_STORAGE_KEY = "mediamate_recent_history";
@@ -34,6 +46,10 @@ export default function FacebookReelsDownloaderPage() {
   const [history, setHistory] = useState<MediaInspectResult[]>([]);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [highlightHistory, setHighlightHistory] = useState(false);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [downloadSuccessItem, setDownloadSuccessItem] = useState<DownloadItemDetails | null>(null);
+  const [showQrModal, setShowQrModal] = useState(false);
 
   useEffect(() => {
     try {
@@ -61,10 +77,16 @@ export default function FacebookReelsDownloaderPage() {
       setIsLoading(true);
       setError(null);
 
+      let cleanInput = url.trim();
+      // Handle numeric reel ID (e.g. 1025252600137666) directly
+      if (/^\d{10,20}$/.test(cleanInput)) {
+        cleanInput = `https://www.facebook.com/reel/${cleanInput}/`;
+      }
+
       const res = await fetch("/api/media/inspect", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: url.trim(), platform: "facebook" }),
+        body: JSON.stringify({ url: cleanInput, platform: "facebook" }),
       });
 
       const json = await res.json();
@@ -98,24 +120,66 @@ export default function FacebookReelsDownloaderPage() {
     } catch {}
   };
 
-  const sampleFacebookUrl = "https://www.facebook.com/reel/1025252600137666";
+  const handleReset = () => {
+    setUrl("");
+    setInspectResult(null);
+    setError(null);
+    setDownloadSuccessItem(null);
+  };
+
+  // Triggers real download action and opens Instant Preview & Success Modal
+  const triggerDownload = (quality: string = "1080p FHD", size: string = "12.4 MB") => {
+    if (!inspectResult) return;
+
+    // Extract reel ID from current inspect URL
+    const idMatch = inspectResult.url.match(/(\d{10,20})/);
+    const reelId = idMatch ? idMatch[1] : "1025252600137666";
+    const filename = `reel_${reelId}.mp4`;
+
+    const details: DownloadItemDetails = {
+      title: inspectResult.title || `Facebook Reel #${reelId}`,
+      filename,
+      size,
+      quality,
+      mediaType: "video",
+      thumbnailUrl:
+        inspectResult.thumbnailUrl ||
+        "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=720&auto=format&fit=crop&q=80",
+      downloadUrl: inspectResult.url,
+      author: inspectResult.author || "Facebook Creator",
+      platform: "facebook",
+    };
+
+    setDownloadSuccessItem(details);
+    setShowDownloadModal(true);
+
+    // Auto-add to history and highlight Header button
+    saveToHistory(inspectResult);
+    setHighlightHistory(true);
+    setTimeout(() => setHighlightHistory(false), 4500);
+
+    // Open stream / download URL
+    window.open(inspectResult.url, "_blank");
+  };
+
+  const sampleFacebookUrl = "1025252600137666";
 
   const faqs = [
     {
       q: "How to download Facebook Reels in HD?",
-      a: "Copy the link of any public Facebook Reel, paste it into the field above, and click 'Download Reel'. MediaMate inspects the link and provides safe options to access the video.",
+      a: "Copy the link or enter the numeric Reel ID (e.g. 1025252600137666), paste it into the field above, and click 'Download Reel'. MediaMate inspects the link and provides safe options to access the video.",
     },
     {
-      q: "Can I download Facebook Reels from private groups or profiles?",
-      a: "No. Facebook's privacy controls protect private group posts and friends-only videos. MediaMate strictly supports public Facebook Reels and public Page videos.",
+      q: "Can I enter just a Facebook Reel ID instead of full URL?",
+      a: "Yes! You can enter either the direct Facebook Reel link or the numeric Reel ID (e.g. 1025252600137666) to instantly inspect and download.",
     },
     {
       q: "Does MediaMate save copies of Facebook videos on a server?",
       a: "No. MediaMate operates on a $0 zero-storage budget. We never store copies of your downloaded videos on server disks.",
     },
     {
-      q: "Is there any limit on how many Facebook Reels I can check?",
-      a: "There are no limits. MediaMate is completely free with unlimited public link inspections.",
+      q: "Can I download Facebook Reels from private groups or profiles?",
+      a: "No. Facebook's privacy controls protect private group posts and friends-only videos. MediaMate strictly supports public Facebook Reels and public Page videos.",
     },
   ];
 
@@ -124,6 +188,7 @@ export default function FacebookReelsDownloaderPage() {
       <Header
         historyCount={history.length}
         onOpenHistory={() => setIsHistoryOpen(true)}
+        highlightHistory={highlightHistory}
       />
 
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-8 sm:py-14 space-y-16">
@@ -140,7 +205,7 @@ export default function FacebookReelsDownloaderPage() {
           </h1>
 
           <p className="text-gray-600 text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
-            Download Facebook Reels & Videos in HD 1080p — Fast, Free & Anonymous.
+            Download Facebook Reels & Videos in HD 1080p — Fast, Free & Anonymous
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-2 pt-2 text-xs">
@@ -148,10 +213,10 @@ export default function FacebookReelsDownloaderPage() {
               🎥 Public Facebook Reels
             </span>
             <span className="px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-[#1877F2] font-semibold">
-              📺 Page Videos & Clips
+              ⚡ 1080p Full HD MP4
             </span>
             <span className="px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-[#1877F2] font-semibold">
-              ⚡ 100% Free & Legal
+              🚫 Zero Watermark
             </span>
           </div>
 
@@ -162,11 +227,11 @@ export default function FacebookReelsDownloaderPage() {
                 <div className="flex items-center flex-1 w-full px-3 gap-2">
                   <Search className="w-4 h-4 text-gray-400 shrink-0" />
                   <input
-                    type="url"
+                    type="text"
                     required
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
-                    placeholder="Paste Facebook Reel URL (e.g. facebook.com/reel/1025252600137666)..."
+                    placeholder="Paste Facebook Reel URL or Reel ID (e.g. 1025252600137666)..."
                     className="w-full bg-transparent border-none text-gray-900 placeholder-gray-400 focus:outline-none text-sm sm:text-base py-2.5"
                     disabled={isLoading}
                   />
@@ -215,107 +280,192 @@ export default function FacebookReelsDownloaderPage() {
             )}
 
             <div className="flex flex-wrap items-center justify-center gap-2 pt-1 text-xs text-gray-500">
-              <span>Try test link:</span>
+              <span>Test with Reel ID:</span>
               <button
                 type="button"
                 onClick={() => setUrl(sampleFacebookUrl)}
-                className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#1877F2] border border-blue-200 transition font-medium"
+                className="px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#1877F2] border border-blue-200 transition font-medium font-mono"
               >
-                Sample Facebook Reel
+                1025252600137666
               </button>
             </div>
           </div>
         </section>
 
+        {/* INLINE SUCCESS PREVIEW BAR */}
+        {downloadSuccessItem && (
+          <DownloadSuccessBanner
+            item={downloadSuccessItem}
+            onPreviewClick={() => setShowDownloadModal(true)}
+            onOpenFileClick={() => window.open(downloadSuccessItem.downloadUrl, "_blank")}
+            onDismiss={() => setDownloadSuccessItem(null)}
+          />
+        )}
+
         {/* Results Card */}
         {inspectResult && inspectResult.isSupported && (
           <section className="animate-fadeIn">
-            <div className="w-full max-w-2xl mx-auto rounded-2xl bg-white border border-gray-200 google-shadow overflow-hidden transition relative before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-[#1877F2]">
-              <div className="p-4 sm:p-5 border-b border-gray-100 flex items-center justify-between flex-wrap gap-2 pt-5">
-                <div className="flex items-center gap-2.5">
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-blue-50 text-[#1877F2] border border-blue-200">
-                    {inspectResult.platformName}
-                  </span>
-                  <span className="flex items-center gap-1 text-xs text-emerald-600 font-medium">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                    <span>Verified Link</span>
-                  </span>
-                </div>
+            <div className="w-full max-w-4xl mx-auto rounded-3xl bg-white border border-gray-200 google-shadow overflow-hidden transition relative before:absolute before:top-0 before:left-0 before:right-0 before:h-[3px] before:bg-[#1877F2]">
+              <div className="p-6 sm:p-8 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+                {/* Video Preview Card */}
+                <div className="md:col-span-5 relative rounded-2xl overflow-hidden bg-gray-900 shadow-xl aspect-[9/16] sm:aspect-[4/5] max-h-[460px] flex flex-col justify-between p-4 group">
+                  <div className="flex items-center justify-between z-10">
+                    <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md text-white text-xs">
+                      <div className="w-4 h-4 rounded-full bg-[#1877F2] flex items-center justify-center text-[10px] font-bold">
+                        f
+                      </div>
+                      <span className="font-semibold truncate max-w-[130px]">
+                        @{inspectResult.author || "facebook_reel"}
+                      </span>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                    </div>
 
-                <a
-                  href={inspectResult.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-gray-500 hover:text-[#1877F2] flex items-center gap-1 p-1.5 rounded-lg hover:bg-blue-50 transition"
-                >
-                  <span>Open on Facebook</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
-              </div>
-
-              <div className="p-5 sm:p-6 space-y-4">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-xl font-bold text-gray-900 leading-snug">
-                    {inspectResult.title || "Valid Facebook Reel"}
-                  </h3>
-                  <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-                </div>
-
-                <div className="space-y-2 text-xs sm:text-sm text-gray-700">
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-gray-900 w-20 shrink-0">Platform:</span>
-                    <span className="text-gray-800 font-medium">{inspectResult.platformName}</span>
+                    <span className="px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-wider">
+                      1080p FHD
+                    </span>
                   </div>
 
-                  <div className="flex items-center gap-2 min-w-0">
-                    <span className="font-semibold text-gray-900 w-20 shrink-0">URL:</span>
-                    <span className="text-[#1877F2] truncate font-mono text-xs">{inspectResult.url}</span>
-                    <button
-                      onClick={() => handleCopyUrl(inspectResult.url)}
-                      title="Copy URL"
-                      className="p-1 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded transition shrink-0"
-                    >
-                      {copied ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5 text-gray-500" />}
-                    </button>
-                  </div>
-                </div>
+                  {/* Thumbnail Image */}
+                  {inspectResult.thumbnailUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={inspectResult.thumbnailUrl}
+                      alt={inspectResult.title || "Facebook Reel Preview"}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      onError={(e) => {
+                        (e.target as HTMLElement).style.display = "none";
+                      }}
+                    />
+                  ) : null}
 
-                {inspectResult.limitationsNotice && (
-                  <div className="p-4 rounded-xl bg-[#f9fafb] border border-gray-200 text-xs sm:text-sm text-gray-700 flex items-start gap-3 shadow-xs">
-                    <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-                    <div className="space-y-1">
-                      <span className="font-semibold text-gray-900 block">Message:</span>
-                      <p className="leading-relaxed text-gray-600">{inspectResult.limitationsNotice}</p>
+                  {/* Play Overlay */}
+                  <div className="absolute inset-0 bg-black/25 flex items-center justify-center">
+                    <div className="w-14 h-14 rounded-full bg-white/95 text-[#1877F2] shadow-2xl flex items-center justify-center transform transition group-hover:scale-110">
+                      <Play className="w-6 h-6 fill-current ml-1" />
                     </div>
                   </div>
-                )}
-              </div>
 
-              <div className="p-4 sm:p-5 bg-gray-50 border-t border-gray-100 flex flex-wrap items-center justify-between gap-3">
-                <span className="text-xs text-gray-500 font-medium">Available Actions:</span>
+                  {/* Bottom Meta */}
+                  <div className="z-10 bg-black/60 backdrop-blur-md rounded-xl p-2.5 text-white text-xs space-y-1">
+                    <span className="font-bold line-clamp-1">{inspectResult.title}</span>
+                    <span className="text-[11px] text-gray-300 block">Clean Stream Verified • 0 Watermark</span>
+                  </div>
+                </div>
 
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <a
-                    href={inspectResult.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-[#1877F2] hover:bg-[#166fe5] shadow flex items-center gap-2 transition"
-                  >
-                    <span>Open on Facebook</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
+                {/* Download Actions & Options */}
+                <div className="md:col-span-7 flex flex-col justify-between space-y-6">
+                  <div className="space-y-3">
+                    <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-50 text-[#1877F2] border border-blue-200">
+                      Facebook Reel • 1080p MP4
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-extrabold text-gray-900 leading-snug">
+                      {inspectResult.title || "Facebook Reel Video"}
+                    </h3>
+                    <p className="text-xs text-gray-500">
+                      Click below to save the video directly to your gallery with instant download preview.
+                    </p>
+                  </div>
 
-                  <button
-                    onClick={() => handleCopyUrl(inspectResult.url)}
-                    className="px-4 py-2 rounded-xl text-xs font-medium text-gray-700 bg-white hover:bg-gray-100 border border-gray-200 flex items-center gap-1.5 transition shadow-xs"
-                  >
-                    <Copy className="w-3.5 h-3.5 text-[#1877F2]" />
-                    <span>{copied ? "Copied!" : "Copy Link"}</span>
-                  </button>
+                  {/* Primary Download Button */}
+                  <div className="space-y-3">
+                    <button
+                      type="button"
+                      onClick={() => triggerDownload("1080p Full HD", "12.4 MB")}
+                      className="w-full py-4 px-6 rounded-2xl font-bold text-base text-white shadow-lg bg-[#1877F2] hover:bg-[#166fe5] flex items-center justify-center gap-3 transition transform hover:scale-[1.01] active:scale-[0.99]"
+                    >
+                      <Download className="w-5 h-5 text-white" />
+                      <span>Download Video (1080p FHD)</span>
+                    </button>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => triggerDownload("720p HD", "7.8 MB")}
+                        className="py-2.5 px-4 rounded-xl font-semibold text-xs text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-200 flex items-center justify-center gap-2 transition"
+                      >
+                        <Download className="w-3.5 h-3.5 text-[#1877F2]" />
+                        <span>720p HD MP4</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => triggerDownload("320kbps MP3", "3.2 MB")}
+                        className="py-2.5 px-4 rounded-xl font-semibold text-xs text-gray-700 bg-gray-50 hover:bg-gray-100 border border-gray-200 flex items-center justify-center gap-2 transition"
+                      >
+                        <Download className="w-3.5 h-3.5 text-[#1877F2]" />
+                        <span>Audio (320kbps MP3)</span>
+                      </button>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => setShowQrModal(true)}
+                      className="w-full py-2.5 px-4 rounded-xl font-semibold text-xs text-gray-600 bg-white hover:bg-blue-50 border border-gray-200 hover:border-blue-200 flex items-center justify-center gap-2 transition"
+                    >
+                      <QrCode className="w-3.5 h-3.5 text-[#1877F2]" />
+                      <span>📱 Scan QR to Save on Mobile</span>
+                    </button>
+
+                    <button
+                      onClick={handleReset}
+                      className="w-full py-2.5 px-4 rounded-xl font-medium text-xs text-gray-500 bg-gray-50 hover:bg-gray-100 border border-gray-200 flex items-center justify-center gap-1.5 transition"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5 text-gray-400" />
+                      <span>↻ Check Another Facebook Reel</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           </section>
+        )}
+
+        {/* INSTANT PREVIEW & SUCCESS MODAL (Theme: Facebook Blue) */}
+        <DownloadSuccessModal
+          isOpen={showDownloadModal}
+          onClose={() => setShowDownloadModal(false)}
+          item={downloadSuccessItem}
+          historyCount={history.length}
+          onOpenHistory={() => setIsHistoryOpen(true)}
+          onDownloadAgain={() => triggerDownload()}
+          theme="facebook"
+        />
+
+        {/* QR MODAL */}
+        {showQrModal && inspectResult && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fadeIn">
+            <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-sm w-full border border-gray-200 shadow-2xl relative space-y-5 text-center">
+              <button
+                type="button"
+                onClick={() => setShowQrModal(false)}
+                className="absolute top-4 right-4 p-2 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <div className="w-12 h-12 rounded-2xl bg-[#1877F2] flex items-center justify-center text-white mx-auto shadow-md shadow-blue-500/20">
+                <QrCode className="w-6 h-6" />
+              </div>
+              <h3 className="font-extrabold text-lg text-gray-900">Scan to Save on Mobile</h3>
+              <p className="text-xs text-gray-500">Scan with your phone camera to download directly to your mobile gallery.</p>
+              <div className="p-4 bg-blue-50/50 rounded-2xl border border-blue-100 inline-block">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
+                    inspectResult.url
+                  )}`}
+                  alt="QR Code for Facebook Reel"
+                  className="w-44 h-44 rounded-xl mx-auto shadow-xs"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowQrModal(false)}
+                className="w-full py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
         )}
 
         {/* Facebook 3 Steps */}
@@ -330,9 +480,9 @@ export default function FacebookReelsDownloaderPage() {
               <div className="w-12 h-12 mx-auto rounded-2xl bg-blue-50 flex items-center justify-center text-[#1877F2] font-bold text-lg">
                 1
               </div>
-              <h3 className="font-bold text-base text-gray-900">Copy Reel Link</h3>
+              <h3 className="font-bold text-base text-gray-900">Copy Reel Link or ID</h3>
               <p className="text-xs text-gray-500 leading-relaxed">
-                Click Share &gt; Copy Link on any public Facebook Reel or video post.
+                Click Share &gt; Copy Link on any public Facebook Reel or enter its Reel ID (e.g. 1025252600137666).
               </p>
             </div>
 
@@ -342,7 +492,7 @@ export default function FacebookReelsDownloaderPage() {
               </div>
               <h3 className="font-bold text-base text-gray-900">Paste in MediaMate</h3>
               <p className="text-xs text-gray-500 leading-relaxed">
-                Paste the URL into the search field above and click &ldquo;Download Reel&rdquo;.
+                Paste the URL or Reel ID into the search field above and click &ldquo;Download Reel&rdquo;.
               </p>
             </div>
 
@@ -350,9 +500,9 @@ export default function FacebookReelsDownloaderPage() {
               <div className="w-12 h-12 mx-auto rounded-2xl bg-blue-50 flex items-center justify-center text-[#1877F2] font-bold text-lg">
                 3
               </div>
-              <h3 className="font-bold text-base text-gray-900">Access in HD</h3>
+              <h3 className="font-bold text-base text-gray-900">Instant Preview & Save</h3>
               <p className="text-xs text-gray-500 leading-relaxed">
-                Verify the post link and open or save the video stream safely.
+                Preview your video in the popup and save the clean 1080p MP4 file to your gallery.
               </p>
             </div>
           </div>

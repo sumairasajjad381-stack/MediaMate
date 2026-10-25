@@ -49,7 +49,7 @@ export function HistoryDrawer({
             history.map((item, idx) => (
               <div
                 key={idx}
-                className="p-3.5 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 space-y-2 transition cursor-pointer group"
+                className="p-3 rounded-xl bg-gray-50 border border-gray-200 hover:border-gray-300 space-y-2 transition cursor-pointer group hover:bg-gray-100/70"
                 onClick={() => {
                   onSelect(item);
                   onClose();
@@ -64,10 +64,28 @@ export function HistoryDrawer({
                     <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
                   </span>
                 </div>
-                <p className="text-xs font-medium text-gray-800 line-clamp-1">
-                  {item.title || item.url}
-                </p>
-                <p className="text-[11px] text-gray-400 truncate">{item.url}</p>
+
+                <div className="flex items-center gap-2.5">
+                  {item.thumbnailUrl ? (
+                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-900 shrink-0 border border-gray-200 shadow-2xs">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={item.thumbnailUrl}
+                        alt={item.title || ""}
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLElement).style.display = "none";
+                        }}
+                      />
+                    </div>
+                  ) : null}
+                  <div className="flex-1 min-w-0 space-y-0.5">
+                    <p className="text-xs font-semibold text-gray-900 line-clamp-1">
+                      {item.title || item.url}
+                    </p>
+                    <p className="text-[11px] text-gray-400 truncate">{item.url}</p>
+                  </div>
+                </div>
               </div>
             ))
           )}

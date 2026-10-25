@@ -27,6 +27,11 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { HistoryDrawer } from "@/components/HistoryDrawer";
 import { InstagramTabs } from "@/components/InstagramTabs";
+import {
+  DownloadSuccessModal,
+  DownloadSuccessBanner,
+  DownloadItemDetails,
+} from "@/components/DownloadSuccessModal";
 import { MediaInspectResult } from "@/lib/platforms/types";
 
 const LOCAL_STORAGE_KEY = "mediamate_recent_history";
@@ -53,6 +58,38 @@ export default function InstagramStorySaverPage() {
   const [previewStory, setPreviewStory] = useState<StoryItem | null>(null);
   const [isBatchDownloading, setIsBatchDownloading] = useState(false);
   const [batchSuccess, setBatchSuccess] = useState(false);
+  const [highlightHistory, setHighlightHistory] = useState(false);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [downloadSuccessItem, setDownloadSuccessItem] = useState<DownloadItemDetails | null>(null);
+
+  const triggerStoryDownload = (
+    filename: string,
+    size: string,
+    quality: string,
+    mediaType: "video" | "image" | "story" = "story",
+    customThumbnail?: string
+  ) => {
+    if (!inspectResult) return;
+    const item: DownloadItemDetails = {
+      title: inspectResult.title || "Instagram Story HD",
+      filename,
+      size,
+      quality,
+      mediaType,
+      thumbnailUrl: customThumbnail || inspectResult.thumbnailUrl,
+      downloadUrl: inspectResult.url,
+      author: inspectResult.author || "instagram_user",
+      platform: "instagram",
+    };
+
+    setDownloadSuccessItem(item);
+    setShowDownloadModal(true);
+    saveToHistory(inspectResult);
+    setHighlightHistory(true);
+    setTimeout(() => setHighlightHistory(false), 4500);
+
+    window.open(inspectResult.url, "_blank");
+  };
 
   useEffect(() => {
     try {
@@ -130,11 +167,14 @@ export default function InstagramStorySaverPage() {
     setTimeout(() => {
       setIsBatchDownloading(false);
       setBatchSuccess(true);
-      if (inspectResult?.url) {
-        window.open(inspectResult.url, "_blank");
-      }
+      triggerStoryDownload(
+        `stories_${inspectResult?.author || "archive"}_batch.zip`,
+        "24.5 MB",
+        "HD Archive (ZIP)",
+        "story"
+      );
       setTimeout(() => setBatchSuccess(false), 4000);
-    }, 1200);
+    }, 900);
   };
 
   // Dynamic mock stories grid for visual comparison (Snapgram killer feature)
@@ -239,6 +279,7 @@ export default function InstagramStorySaverPage() {
       <Header
         historyCount={history.length}
         onOpenHistory={() => setIsHistoryOpen(true)}
+        highlightHistory={highlightHistory}
       />
 
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-8 sm:py-14 space-y-16">
@@ -333,6 +374,16 @@ export default function InstagramStorySaverPage() {
             )}
           </div>
         </section>
+
+        {/* INLINE SUCCESS PREVIEW BAR */}
+        {downloadSuccessItem && (
+          <DownloadSuccessBanner
+            item={downloadSuccessItem}
+            onPreviewClick={() => setShowDownloadModal(true)}
+            onOpenFileClick={() => window.open(downloadSuccessItem.downloadUrl, "_blank")}
+            onDismiss={() => setDownloadSuccessItem(null)}
+          />
+        )}
 
         {/* MULTI-STORY CARDS GRID RESULT (SNAPGRAM KILLER FEATURE) */}
         {inspectResult && inspectResult.isSupported && (
@@ -478,15 +529,22 @@ export default function InstagramStorySaverPage() {
 
                     {/* Card Actions */}
                     <div className="p-3 space-y-2 bg-white">
-                      <a
-                        href={inspectResult.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
+                        type="button"
+                        onClick={() =>
+                          triggerStoryDownload(
+                            `story_${story.id}_${inspectResult.author || "user"}.${story.type === "video" ? "mp4" : "jpg"}`,
+                            story.type === "video" ? "11.2 MB" : "2.4 MB",
+                            story.resolution,
+                            story.type === "video" ? "video" : "image",
+                            story.thumbnailUrl
+                          )
+                        }
                         className="w-full py-2 px-3 rounded-xl font-bold text-xs text-white shadow-xs insta-btn flex items-center justify-center gap-1.5 transition"
                       >
                         <Download className="w-3.5 h-3.5" />
                         <span>Download {story.type === "video" ? "MP4" : "JPG"}</span>
-                      </a>
+                      </button>
 
                       <button
                         type="button"
@@ -634,6 +692,17 @@ export default function InstagramStorySaverPage() {
           </div>
         </section>
       </main>
+
+      {/* INSTANT PREVIEW & SUCCESS MODAL */}
+      <DownloadSuccessModal
+        isOpen={showDownloadModal}
+        onClose={() => setShowDownloadModal(false)}
+        item={downloadSuccessItem}
+        historyCount={history.length}
+        onOpenHistory={() => setIsHistoryOpen(true)}
+        onDownloadAgain={() => handleBatchDownload()}
+        theme="instagram"
+      />
 
       <Footer />
 

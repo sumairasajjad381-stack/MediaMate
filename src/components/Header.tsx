@@ -8,9 +8,10 @@ import { History, ShieldCheck, Instagram, Facebook } from "lucide-react";
 interface HeaderProps {
   historyCount: number;
   onOpenHistory: () => void;
+  highlightHistory?: boolean;
 }
 
-export function Header({ historyCount, onOpenHistory }: HeaderProps) {
+export function Header({ historyCount, onOpenHistory, highlightHistory }: HeaderProps) {
   const pathname = usePathname();
 
   const isHome = pathname === "/";
@@ -94,14 +95,30 @@ export function Header({ historyCount, onOpenHistory }: HeaderProps) {
 
           <button
             onClick={onOpenHistory}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200 text-xs font-medium transition"
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition relative ${
+              highlightHistory
+                ? "bg-emerald-50 text-emerald-800 border-2 border-emerald-400 ring-2 ring-emerald-200 animate-pulse font-bold"
+                : "bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200"
+            }`}
             title="View recent history"
           >
-            <History className="w-4 h-4 text-gray-500" />
+            <History className={`w-4 h-4 ${highlightHistory ? "text-emerald-600" : "text-gray-500"}`} />
             <span className="hidden sm:inline">History</span>
             {historyCount > 0 && (
-              <span className="px-1.5 py-0.2 rounded-full bg-blue-100 text-blue-700 text-[11px] font-bold">
+              <span
+                className={`px-1.5 py-0.2 rounded-full text-[11px] font-bold ${
+                  highlightHistory
+                    ? "bg-emerald-600 text-white"
+                    : "bg-blue-100 text-blue-700"
+                }`}
+              >
                 {historyCount}
+              </span>
+            )}
+            {highlightHistory && (
+              <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
               </span>
             )}
           </button>
